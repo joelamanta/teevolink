@@ -6,7 +6,8 @@ export type MacroEventType = 'keydown' | 'keyup' | 'delay'
 export interface MacroEvent { type: MacroEventType; key?: string; ms?: number }
 export interface Macro { id: string; name: string; events: MacroEvent[] }
 
-const STAGE_COLORS = ['#f87171','#fb923c','#facc15','#78BE1F','#60a5fa','#a78bfa','#f472b6','#ffffff']
+// Brand green first; red kept as design-system #f87171; others vivid for LED visibility
+const STAGE_COLORS = ['#78BE1F','#f87171','#FB923C','#FACC15','#38BDF8','#A855F7','#F472B6','#FFFFFF']
 
 interface DeviceState {
   dpiStages: DPIStage[]
@@ -82,10 +83,10 @@ interface DeviceActions {
 
 export const useDeviceStore = create<DeviceState & DeviceActions>((set) => ({
   dpiStages: [
-    { id: 's1', value: 400,  color: '#f87171' },
-    { id: 's2', value: 800,  color: '#fb923c' },
-    { id: 's3', value: 1600, color: '#78BE1F' },
-    { id: 's4', value: 3200, color: '#60a5fa' },
+    { id: 's1', value: 400,  color: '#78BE1F' },
+    { id: 's2', value: 800,  color: '#f87171' },
+    { id: 's3', value: 1600, color: '#38BDF8' },
+    { id: 's4', value: 3200, color: '#A855F7' },
   ],
   activeDpi: 2,
   selectedStageIdx: 2,

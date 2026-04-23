@@ -4,7 +4,7 @@ import { Trash2 } from 'lucide-react'
 import { useDeviceStore, STAGE_COLORS } from '../../store/deviceStore'
 import { useLang } from '../../contexts/LangContext'
 
-const REPORT_RATES = [125, 250, 500, 1000, 2000, 4000, 8000]
+const REPORT_RATES = [1000, 2000, 4000, 8000]
 const DPI_PRESETS  = [200, 400, 800, 1200, 1600, 2400, 3200, 6400, 12800, 16000, 19000, 26000, 30000, 42000]
 const DPI_MIN = 200, DPI_MAX = 42000, DPI_STEP = 50
 
@@ -142,17 +142,17 @@ export default function DPIPage() {
                           <button key={c} onClick={() => setDpiStageColor(selectedStageIdx, c)}
                             style={{
                               flex: 1, height: 32, borderRadius: 6,
-                              border: selectedStage.color === c ? `1.5px solid ${c}` : '1.5px solid var(--bd)',
-                              background: selectedStage.color === c ? `${c}18` : 'var(--bg3)',
-                              cursor: 'pointer', padding: 0, outline: 'none',
-                              display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              transition: 'all 0.12s',
+                              background: c,
+                              border: 'none', padding: 0, cursor: 'pointer',
+                              outline: selectedStage.color === c ? '2.5px solid white' : '2.5px solid transparent',
+                              outlineOffset: '2px',
+                              opacity: selectedStage.color === c ? 1 : 0.82,
+                              transition: 'outline-color 0.12s, opacity 0.12s, transform 0.1s',
+                              transform: selectedStage.color === c ? 'scale(0.94)' : 'scale(1)',
                             }}
-                            onMouseEnter={e => { if (selectedStage.color !== c) e.currentTarget.style.borderColor = c }}
-                            onMouseLeave={e => { if (selectedStage.color !== c) e.currentTarget.style.borderColor = 'var(--bd)' }}
-                          >
-                            <div style={{ width: 22, height: 10, borderRadius: 3, background: c }} />
-                          </button>
+                            onMouseEnter={e => { if (selectedStage.color !== c) e.currentTarget.style.opacity = '1' }}
+                            onMouseLeave={e => { if (selectedStage.color !== c) e.currentTarget.style.opacity = '0.82' }}
+                          />
                         ))}
                       </div>
                     ))}
@@ -191,18 +191,18 @@ export default function DPIPage() {
           {REPORT_RATES.map(rate => (
             <button key={rate} onClick={() => setReportRate(rate)}
               style={{
-                flex: 1, padding: '8px 4px', borderRadius: 'var(--r)',
+                flex: 1, padding: '14px 4px', borderRadius: 'var(--r)',
                 border: reportRate === rate ? '1px solid var(--ac)' : '1px solid var(--bd)',
                 background: reportRate === rate ? 'var(--acl)' : 'transparent',
                 color: reportRate === rate ? 'var(--acd)' : 'var(--tx2)',
-                fontSize: 15, fontWeight: 700, fontFamily: 'inherit',
+                fontSize: 17, fontWeight: 700, fontFamily: 'inherit',
                 fontVariantNumeric: 'tabular-nums', cursor: 'pointer', transition: 'all 0.12s',
-                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1,
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
               }}
               onMouseEnter={e => { if (reportRate !== rate) { e.currentTarget.style.borderColor = 'var(--ac)'; e.currentTarget.style.color = 'var(--tx)' }}}
               onMouseLeave={e => { if (reportRate !== rate) { e.currentTarget.style.borderColor = 'var(--bd)'; e.currentTarget.style.color = 'var(--tx2)' }}}>
-              {rate >= 1000 ? `${rate / 1000}K` : rate}
-              <span style={{ fontSize: 9, fontWeight: 600, opacity: 0.55 }}>Hz</span>
+              {rate}
+              <span style={{ fontSize: 10, fontWeight: 600, opacity: 0.55 }}>Hz</span>
             </button>
           ))}
         </div>
