@@ -1,0 +1,163 @@
+@import "tailwindcss";
+
+/* ─── Teevolution Design System v2.0 — TeevoLink (dark-mode default) ─── */
+
+:root {
+  /* Surface */
+  --bg:      #111111;
+  --bg2:     #1a1a1a;
+  --bg3:     #0d0d0d;
+  --bg-inp:  #1e1e1e;
+
+  /* Text */
+  --tx:      #ededed;
+  --tx2:     #909090;
+  --tx3:     #555555;
+
+  /* Borders */
+  --bd:      #272727;
+  --bd2:     #363636;
+
+  /* Brand green */
+  --ac:      #78BE1F;
+  --acd:     #96d038;
+  --acl:     #1d2e07;
+  --ac-shadow: rgba(120, 190, 31, 0.22);
+
+  /* Semantic — blue */
+  --bl:      #0c1e38;
+  --blx:     #85B7EB;
+
+  /* Semantic — amber */
+  --aml:     #261800;
+  --amx:     #FAC775;
+
+  /* Semantic — red */
+  --rdl:     #260a0a;
+  --rdx:     #f87171;
+
+  /* Overlay */
+  --overlay: rgba(0, 0, 0, 0.55);
+
+  /* Radius */
+  --r:       6px;
+  --rl:      8px;
+
+  /* Shadows */
+  --sh:      0 1px 3px rgba(0,0,0,.18), 0 1px 2px rgba(0,0,0,.12);
+  --shm:     0 4px 16px rgba(0,0,0,.28), 0 2px 4px rgba(0,0,0,.16);
+
+  /* Motion */
+  --t-fast:      150ms;
+  --t-normal:    200ms;
+  --t-enter:     220ms;
+  --ease-std:    cubic-bezier(0.2, 0, 0, 1);
+  --ease-spring: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Z-index layers */
+  --z-topbar:  100;
+  --z-overlay: 199;
+  --z-sidebar: 200;
+  --z-toast:   9999;
+}
+
+/* Light mode override (manual toggle only) */
+[data-theme="light"] {
+  --bg:      #ffffff;
+  --bg2:     #f5f5f5;
+  --bg3:     #f0f0f0;
+  --bg-inp:  #ffffff;
+  --tx:      #0a0a0a;
+  --tx2:     #555555;
+  --tx3:     #999999;
+  --bd:      #e0e0e0;
+  --bd2:     #c8c8c8;
+  --acd:     #5A9010;
+  --acl:     #EEF7DF;
+  --bl:      #EBF2FB;
+  --blx:     #185FA5;
+  --aml:     #FEF3E2;
+  --amx:     #854F0B;
+  --rdl:     #FEF1F1;
+  --rdx:     #C42B2B;
+  --overlay: rgba(0, 0, 0, 0.35);
+  --sh:      0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shm:     0 4px 16px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+}
+
+/* ─── Base ─── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg3);
+  color: var(--tx);
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root { height: 100%; }
+
+/* ─── Utilities ─── */
+.tabular { font-variant-numeric: tabular-nums; }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ─── Focus ring ─── */
+:focus-visible {
+  outline: 2px solid var(--ac);
+  outline-offset: 2px;
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bd2); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--tx3); }
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── Animations ─── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+.anim-enter {
+  animation: fadeSlideUp var(--t-enter) var(--ease-std) both;
+}
