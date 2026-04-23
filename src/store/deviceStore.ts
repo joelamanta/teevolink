@@ -30,7 +30,28 @@ interface DeviceState {
   battery: { level: number; charging: boolean }
 }
 
+export interface DeviceSnapshot {
+  dpiStages: DPIStage[]
+  activeDpi: number
+  selectedStageIdx: number
+  lightMode: number
+  lightColor: string
+  brightness: number
+  lightSpeed: number
+  reportRate: number
+  motionSync: boolean
+  ripple: boolean
+  longRange: boolean
+  sleepTime: number
+  lod: number
+  debounce: number
+  angleSnap: boolean
+  battery: { level: number; charging: boolean }
+}
+
 interface DeviceActions {
+  loadFromDevice: (snap: DeviceSnapshot) => void
+  updateBattery: (b: { level: number; charging: boolean }) => void
   setActiveDpi: (i: number) => void
   setSelectedStageIdx: (i: number) => void
   setDpiStageValue: (i: number, v: number) => void
@@ -100,6 +121,8 @@ export const useDeviceStore = create<DeviceState & DeviceActions>((set) => ({
   activeMacroId: 'm1',
   battery: { level: 78, charging: true },
 
+  loadFromDevice: (snap) => set(snap),
+  updateBattery: (b) => set({ battery: b }),
   setActiveDpi: (i) => set({ activeDpi: i }),
   setSelectedStageIdx: (i) => set({ selectedStageIdx: i }),
   setDpiStageValue: (i, v) => set(s => {

@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 
-import { Usb, Wifi, Crosshair, Palette, MousePointer2, Zap, Layers } from 'lucide-react'
+import { Usb, Wifi, Crosshair, Palette, MousePointer2, Zap, Layers, Loader } from 'lucide-react'
+import { hidBridge } from '../services/hidBridge'
 
 const FEATURES = [
   { icon: <Crosshair size={13} />, label: '8 DPI stages', sub: '200 – 26,000 DPI' },
@@ -13,10 +15,23 @@ const FEATURES = [
 ]
 
 export default function ConnectScreen() {
-  const navigate = useNavigate()
+  const navigate  = useNavigate()
+  const [loading, setLoading]   = useState(false)
+  const [error,   setError]     = useState<string | null>(null)
 
-  async function handleConnect() {
-    navigate('/dashboard')
+  async function handleConnect(type: 'usb' | 'wireless') {
+    setError(null)
+    setLoading(true)
+    const result = await hidBridge.connect(type)
+    setLoading(false)
+    if (result.success) {
+      navigate('/dashboard')
+    } else {
+      // User cancelled the browser picker — don't show an error message
+      if (!result.error?.includes('No device selected')) {
+        setError(result.error ?? 'Connection failed')
+      }
+    }
   }
 
   return (
@@ -167,20 +182,37 @@ export default function ConnectScreen() {
         {/* Connection methods */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxWidth: 400 }}>
           <ConnectOption
-            icon={<Usb size={18} />}
+            icon={loading ? <Loader size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <Usb size={18} />}
             title="Connect via USB"
             sub="Plug in the USB cable — instant connection"
             primary
-            onClick={handleConnect}
+            disabled={loading}
+            onClick={() => handleConnect('usb')}
           />
           <ConnectOption
             icon={<Wifi size={18} />}
             title="Connect Wireless"
             sub="Make sure the 2.4GHz receiver is plugged in"
             primary={false}
-            onClick={handleConnect}
+            disabled={loading}
+            onClick={() => handleConnect('wireless')}
           />
         </div>
+
+        {error && (
+          <div style={{
+            maxWidth: 400,
+            padding: '10px 14px',
+            borderRadius: 'var(--r)',
+            background: 'rgba(239,68,68,0.08)',
+            border: '1px solid rgba(239,68,68,0.25)',
+            fontSize: 12,
+            color: 'var(--rdx)',
+            lineHeight: 1.5,
+          }}>
+            {error}
+          </div>
+        )}
 
         {/* Steps */}
         <div style={{ maxWidth: 400 }}>
@@ -234,17 +266,19 @@ export default function ConnectScreen() {
   )
 }
 
-function ConnectOption({ icon, title, sub, primary, onClick }: {
+function ConnectOption({ icon, title, sub, primary, disabled, onClick }: {
   icon: React.ReactNode
   title: string
   sub: string
   primary: boolean
+  disabled?: boolean
   onClick: () => void
 }) {
   return (
     <motion.button
-      whileTap={{ scale: 0.98 }}
-      onClick={onClick}
+      whileTap={disabled ? {} : { scale: 0.98 }}
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -253,7 +287,8 @@ function ConnectOption({ icon, title, sub, primary, onClick }: {
         borderRadius: 'var(--rl)',
         border: primary ? '1px solid var(--ac)' : '1px solid var(--bd)',
         background: primary ? 'var(--acl)' : 'var(--bg)',
-        cursor: 'pointer',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.6 : 1,
         textAlign: 'left',
         fontFamily: 'inherit',
         width: '100%',

@@ -158,6 +158,10 @@ html, body {
   100% { background-position:  400px 0; }
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 .anim-enter {
   animation: fadeSlideUp var(--t-enter) var(--ease-std) both;
 }

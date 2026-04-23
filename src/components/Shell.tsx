@@ -3,10 +3,11 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Crosshair, Zap, Palette, MousePointer2,
-  Settings2, ChevronLeft, ChevronRight, Wifi, Sun, Moon
+  Settings2, ChevronLeft, ChevronRight, Wifi, WifiOff, Sun, Moon
 } from 'lucide-react'
 import { useLang } from '../contexts/LangContext'
 import { useTheme } from '../contexts/ThemeContext'
+import { useConnectionStore } from '../store/connectionStore'
 
 const NAV_ITEMS = [
   { to: '/dashboard',          icon: <Crosshair size={16} />,     labelKey: 'nav.dpi' },
@@ -213,8 +214,40 @@ function SidebarItem({ to, icon, label, collapsed }: {
   )
 }
 
-function Topbar({ onHamburger }: { onHamburger: () => void }) {
+function ConnectionBadge() {
   const { t } = useLang()
+  const { status, isWired, deviceVersion } = useConnectionStore()
+
+  if (status === 'connected') {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--ac)', fontSize: 12 }}>
+        <Wifi size={13} />
+        <span style={{ fontWeight: 500 }}>{isWired ? 'USB' : 'Wireless'}</span>
+        {deviceVersion !== '--' && (
+          <span style={{ color: 'var(--tx3)', fontWeight: 400 }}>{deviceVersion}</span>
+        )}
+      </div>
+    )
+  }
+
+  if (status === 'connecting') {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--tx3)', fontSize: 12 }}>
+        <Wifi size={13} />
+        <span>Connecting…</span>
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--rdx)', fontSize: 12 }}>
+      <WifiOff size={13} />
+      <span>{t('shell.disconnected')}</span>
+    </div>
+  )
+}
+
+function Topbar({ onHamburger }: { onHamburger: () => void }) {
   return (
     <header style={{
       height: 52, display: 'flex', alignItems: 'center',
@@ -238,10 +271,7 @@ function Topbar({ onHamburger }: { onHamburger: () => void }) {
         <span style={{ marginLeft: 8, fontSize: 12, color: 'var(--tx3)' }}>by Teevolution</span>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--rdx)', fontSize: 12 }}>
-        <Wifi size={13} />
-        <span>{t('shell.disconnected')}</span>
-      </div>
+      <ConnectionBadge />
 
       <LangToggle />
       <ThemeToggle />
