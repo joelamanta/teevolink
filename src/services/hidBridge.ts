@@ -76,7 +76,7 @@ function keyFunctionToFn(type: number, param: number, shortCutEntry?: any): stri
       switch (param) {
         case 0x0001: return 'DPI Up'
         case 0x0002: return 'DPI Down'
-        case 0x0003: return 'DPI Loop'
+        case 0x0003:
         default:     return 'DPI Switch'
       }
     case 0x04: return 'Fire Button'
@@ -109,7 +109,7 @@ function fnToKeyFunction(fn: string): KeyFn | null {
     case 'Middle Click':   return { type: 0x01, param: 0x0004 }
     case 'Back Button':    return { type: 0x01, param: 0x0008 }
     case 'Forward Button': return { type: 0x01, param: 0x0010 }
-    case 'DPI Switch':     return { type: 0x02, param: 0x0000 }
+    case 'DPI Switch':     return { type: 0x02, param: 0x0003 }
     case 'DPI Up':         return { type: 0x02, param: 0x0001 }
     case 'DPI Down':       return { type: 0x02, param: 0x0002 }
     case 'DPI Loop':       return { type: 0x02, param: 0x0003 }
@@ -311,9 +311,30 @@ export const hidBridge = {
 
       await HIDHandle.Device_Connect()
 
-      syncToStore()
+      // Device_Connect only starts a 1500ms polling interval — flash is read
+      // asynchronously by Get_Online_Interval. Wait until connectState===Connected
+      // (0x02) before syncing the store, so we get real device data and avoid
+      // colliding HID writes with the in-progress Read_Mouse_Flash.
+      await new Promise<void>((resolve) => {
+        const MAX_MS = 10_000
+        const start  = Date.now()
+        const tick   = setInterval(() => {
+          const d = HIDHandle.deviceInfo as any
+          if (d.connectState === 0x02 || !d.deviceOpen || Date.now() - start > MAX_MS) {
+            clearInterval(tick)
+            resolve()
+          }
+        }, 150)
+      })
 
       const d = HIDHandle.deviceInfo as any
+      if (!d.deviceOpen) {
+        connStore.setStatus('disconnected')
+        return { success: false, error: 'Device disconnected before configuration could be read' }
+      }
+
+      syncToStore()
+
       connStore.setConnected({
         type,
         isWired:       !!d.isWired,
