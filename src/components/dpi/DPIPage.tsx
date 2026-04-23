@@ -3,7 +3,7 @@ import { Trash2 } from 'lucide-react'
 import { useDeviceStore, STAGE_COLORS } from '../../store/deviceStore'
 import { useLang } from '../../contexts/LangContext'
 
-const REPORT_RATES = [125, 250, 500, 1000, 2000, 4000]
+const REPORT_RATES = [125, 250, 500, 1000, 2000, 4000, 8000]
 const DPI_PRESETS  = [200, 400, 800, 1200, 1600, 2400, 3200, 6400, 12800, 16000, 19000, 26000]
 
 export default function DPIPage() {
@@ -53,7 +53,15 @@ export default function DPIPage() {
                   background: stage.color, boxShadow: `0 0 5px ${stage.color}`,
                 }} />
               )}
-              <div style={{ width: 14, height: 14, borderRadius: 3, background: stage.color }} />
+              <div style={{
+                padding: '3px 4px',
+                borderRadius: 4,
+                border: '1px solid var(--bd)',
+                background: 'var(--bg3)',
+                display: 'inline-flex',
+              }}>
+                <div style={{ width: 16, height: 6, borderRadius: 2, background: stage.color }} />
+              </div>
               <div>
                 <div style={{ fontSize: 22, fontWeight: 800, lineHeight: 1, color: 'var(--tx)', fontVariantNumeric: 'tabular-nums' }}>
                   {stage.value >= 1000 ? `${stage.value / 1000}K` : stage.value}
