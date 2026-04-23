@@ -89,7 +89,7 @@ export default function AdvancedPage() {
           </div>
         ) : (
           <button onClick={() => setResetConfirm(true)}
-            style={{ padding: '7px', borderRadius: 'var(--r)', border: '1px solid var(--bd)', background: 'transparent', color: 'var(--tx3)', fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'all 0.12s', width: '100%' }}
+            style={{ padding: '7px', borderRadius: 'var(--r)', border: '1px solid var(--bd)', background: 'transparent', color: 'var(--tx3)', fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'border-color 0.12s, color 0.12s', width: '100%' }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--rdx)'; e.currentTarget.style.color = 'var(--rdx)' }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--bd)'; e.currentTarget.style.color = 'var(--tx3)' }}>
             {t('adv.resetBtn')}
@@ -151,7 +151,7 @@ function ChipGroup({ options, active, onChange, mono }: { options: string[]; act
             background: active === i ? 'var(--acl)' : 'transparent',
             color: active === i ? 'var(--acd)' : 'var(--tx2)',
             cursor: 'pointer', fontFamily: 'inherit', fontVariantNumeric: mono ? 'tabular-nums' : undefined,
-            transition: 'all 0.11s', whiteSpace: 'nowrap',
+            transition: 'border-color 0.11s, background 0.11s, color 0.11s', whiteSpace: 'nowrap',
           }}
           onMouseEnter={e => { if (active !== i) { e.currentTarget.style.borderColor = 'var(--ac)'; e.currentTarget.style.color = 'var(--tx)' }}}
           onMouseLeave={e => { if (active !== i) { e.currentTarget.style.borderColor = 'var(--bd)'; e.currentTarget.style.color = 'var(--tx2)' }}}>

@@ -45,7 +45,7 @@ export default function DPIPage() {
                 border: selectedStageIdx === i ? `1.5px solid ${stage.color}` : '1px solid var(--bd)',
                 background: selectedStageIdx === i ? `${stage.color}10` : 'var(--bg2)',
                 cursor: 'pointer', fontFamily: 'inherit',
-                transition: 'all 0.13s', position: 'relative',
+                transition: 'border-color 0.13s, background 0.13s', position: 'relative',
               }}
             >
               {activeDpi === i && (
@@ -89,7 +89,7 @@ export default function DPIPage() {
       </Section>
 
       {/* Stage editor */}
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" initial={false}>
         {selectedStage && (
           <motion.div key={selectedStage.id} initial={{ opacity: 0, y: 3 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.13 }}>
             <Section
@@ -123,7 +123,7 @@ export default function DPIPage() {
                           border: selectedStage.value === p ? `1px solid ${selectedStage.color}` : '1px solid var(--bd)',
                           background: selectedStage.value === p ? `${selectedStage.color}18` : 'transparent',
                           color: selectedStage.value === p ? selectedStage.color : 'var(--tx2)',
-                          cursor: 'pointer', fontVariantNumeric: 'tabular-nums', transition: 'all 0.1s',
+                          cursor: 'pointer', fontVariantNumeric: 'tabular-nums', transition: 'border-color 0.1s, background 0.1s, color 0.1s',
                         }}>
                         {p >= 1000 ? `${p / 1000}K` : p}
                       </button>
@@ -165,7 +165,7 @@ export default function DPIPage() {
                           height: 32, borderRadius: 6, cursor: 'pointer',
                           border: isCustom ? `1.5px solid ${selectedStage.color}` : '1.5px solid var(--bd)',
                           background: isCustom ? `${selectedStage.color}18` : 'var(--bg3)',
-                          transition: 'all 0.12s', overflow: 'hidden',
+                          transition: 'border-color 0.12s, background 0.12s', overflow: 'hidden',
                         }}>
                           <input type="color"
                             value={selectedStage.color.startsWith('#') ? selectedStage.color : '#78BE1F'}
@@ -196,7 +196,7 @@ export default function DPIPage() {
                 background: reportRate === rate ? 'var(--acl)' : 'transparent',
                 color: reportRate === rate ? 'var(--acd)' : 'var(--tx2)',
                 fontSize: 17, fontWeight: 700, fontFamily: 'inherit',
-                fontVariantNumeric: 'tabular-nums', cursor: 'pointer', transition: 'all 0.12s',
+                fontVariantNumeric: 'tabular-nums', cursor: 'pointer', transition: 'border-color 0.12s, background 0.12s, color 0.12s',
                 display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
               }}
               onMouseEnter={e => { if (reportRate !== rate) { e.currentTarget.style.borderColor = 'var(--ac)'; e.currentTarget.style.color = 'var(--tx)' }}}

@@ -42,7 +42,7 @@ export default function LightingPage() {
                 border: lightMode === mode.id ? '1px solid var(--ac)' : '1px solid var(--bd)',
                 background: lightMode === mode.id ? 'var(--acl)' : 'var(--bg2)',
                 color: lightMode === mode.id ? 'var(--acd)' : 'var(--tx2)',
-                cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.12s',
+                cursor: 'pointer', fontFamily: 'inherit', transition: 'border-color 0.12s, background 0.12s, color 0.12s',
               }}
               onMouseEnter={e => { if (lightMode !== mode.id) { e.currentTarget.style.borderColor = 'var(--bd2)'; e.currentTarget.style.color = 'var(--tx)' }}}
               onMouseLeave={e => { if (lightMode !== mode.id) { e.currentTarget.style.borderColor = 'var(--bd)'; e.currentTarget.style.color = 'var(--tx2)' }}}>

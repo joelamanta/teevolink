@@ -74,7 +74,7 @@ export default function Shell() {
           borderBottom: '1px solid var(--bd)',
           overflow: 'hidden', flexShrink: 0,
         }}>
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait" initial={false}>
             {!collapsed && (
               <motion.div
                 key="wordmark"
@@ -143,7 +143,18 @@ export default function Shell() {
           onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg2)'; e.currentTarget.style.color = 'var(--tx)' }}
           onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--tx3)' }}
         >
-          {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.span
+              key={collapsed ? 'right' : 'left'}
+              initial={{ opacity: 0, scale: 0.25, filter: 'blur(4px)' }}
+              animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, scale: 0.25, filter: 'blur(4px)' }}
+              transition={{ type: 'spring', duration: 0.3, bounce: 0 }}
+              style={{ display: 'flex' }}
+            >
+              {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+            </motion.span>
+          </AnimatePresence>
           {!collapsed && <span style={{ fontSize: 11 }}>{t('shell.collapse')}</span>}
         </button>
       </motion.aside>
@@ -194,7 +205,7 @@ function SidebarItem({ to, icon, label, collapsed }: {
       title={collapsed ? label : undefined}
     >
       <span style={{ flexShrink: 0, display: 'flex' }}>{icon}</span>
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" initial={false}>
         {!collapsed && (
           <motion.span
             key="label"
@@ -290,7 +301,7 @@ function LangToggle() {
           padding: '4px 9px', borderRadius: 'var(--r)',
           border: '1px solid var(--bd)', background: 'var(--bg2)',
           color: 'var(--tx2)', cursor: 'pointer', fontSize: 12, fontWeight: 600,
-          transition: 'all 0.12s',
+          transition: 'border-color var(--t-fast), color var(--t-fast)',
         }}
         onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--ac)'; e.currentTarget.style.color = 'var(--tx)' }}
         onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--bd)'; e.currentTarget.style.color = 'var(--tx2)' }}
@@ -352,20 +363,33 @@ function LangToggle() {
 function ThemeToggle() {
   const { theme, toggleTheme } = useTheme()
   return (
-    <button
+    <motion.button
       onClick={toggleTheme}
+      whileTap={{ scale: 0.96 }}
       title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
       style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         width: 30, height: 30, borderRadius: 'var(--r)',
         border: '1px solid var(--bd)', background: 'var(--bg2)',
-        color: 'var(--tx2)', cursor: 'pointer', transition: 'all 0.12s',
+        color: 'var(--tx2)', cursor: 'pointer',
+        transition: 'border-color var(--t-fast), color var(--t-fast)',
       }}
       onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--ac)'; e.currentTarget.style.color = 'var(--tx)' }}
       onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--bd)'; e.currentTarget.style.color = 'var(--tx2)' }}
     >
-      {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
-    </button>
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.span
+          key={theme}
+          initial={{ opacity: 0, scale: 0.25, filter: 'blur(4px)' }}
+          animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+          exit={{ opacity: 0, scale: 0.25, filter: 'blur(4px)' }}
+          transition={{ type: 'spring', duration: 0.3, bounce: 0 }}
+          style={{ display: 'flex' }}
+        >
+          {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+        </motion.span>
+      </AnimatePresence>
+    </motion.button>
   )
 }
 

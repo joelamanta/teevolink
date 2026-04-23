@@ -50,7 +50,7 @@ export default function ButtonsPage() {
                 padding: '8px 10px', borderRadius: 'var(--r)',
                 border: openId === btn.id ? '1px solid var(--ac)' : '1px solid transparent',
                 background: openId === btn.id ? 'var(--acl)' : 'transparent',
-                cursor: 'pointer', transition: 'all 0.12s',
+                cursor: 'pointer', transition: 'border-color 0.12s, background 0.12s',
               }}
               onMouseEnter={e => { if (openId !== btn.id) e.currentTarget.style.background = 'var(--bg2)' }}
               onMouseLeave={e => { if (openId !== btn.id) e.currentTarget.style.background = 'transparent' }}
@@ -61,7 +61,7 @@ export default function ButtonsPage() {
                 border: `1px solid ${openId === btn.id ? 'transparent' : 'var(--bd)'}`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 11, fontWeight: 800, color: openId === btn.id ? 'var(--bg)' : 'var(--tx3)',
-                fontFamily: 'monospace', transition: 'all 0.12s',
+                fontFamily: 'monospace', transition: 'background 0.12s, color 0.12s, border-color 0.12s',
               }}>
                 {BTN_LABEL[btn.id]}
               </div>

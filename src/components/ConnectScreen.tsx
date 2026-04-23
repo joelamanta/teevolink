@@ -170,11 +170,11 @@ export default function ConnectScreen() {
             TeevoLink v1.0
           </div>
 
-          <h1 style={{ margin: '0 0 12px', fontSize: 32, fontWeight: 800, color: 'var(--tx)', lineHeight: 1.15, letterSpacing: '-0.02em' }}>
+          <h1 style={{ margin: '0 0 12px', fontSize: 32, fontWeight: 800, color: 'var(--tx)', lineHeight: 1.15, letterSpacing: '-0.02em', textWrap: 'balance' } as React.CSSProperties}>
             Configure your<br />
             <span style={{ color: 'var(--ac)' }}>Terra Pro</span>
           </h1>
-          <p style={{ margin: 0, fontSize: 14, color: 'var(--tx2)', lineHeight: 1.65, maxWidth: 380 }}>
+          <p style={{ margin: 0, fontSize: 14, color: 'var(--tx2)', lineHeight: 1.65, maxWidth: 380, textWrap: 'pretty' } as React.CSSProperties}>
             A full-featured mouse driver that runs in your browser. No install, no account. Plug in and start customizing.
           </p>
         </div>
@@ -276,7 +276,7 @@ function ConnectOption({ icon, title, sub, primary, disabled, onClick }: {
 }) {
   return (
     <motion.button
-      whileTap={disabled ? {} : { scale: 0.98 }}
+      whileTap={disabled ? {} : { scale: 0.96 }}
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
       style={{
