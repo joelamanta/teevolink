@@ -140,7 +140,7 @@ export default function DPIPage() {
                         {row.map(c => (
                           <button key={c} onClick={() => setDpiStageColor(selectedStageIdx, c)}
                             style={{
-                              width: 34, height: 28, borderRadius: 6, flexShrink: 0,
+                              flex: 1, height: 32, borderRadius: 6,
                               border: selectedStage.color === c ? `1.5px solid ${c}` : '1.5px solid var(--bd)',
                               background: selectedStage.color === c ? `${c}18` : 'var(--bg3)',
                               cursor: 'pointer', padding: 0, outline: 'none',
@@ -150,7 +150,7 @@ export default function DPIPage() {
                             onMouseEnter={e => { if (selectedStage.color !== c) e.currentTarget.style.borderColor = c }}
                             onMouseLeave={e => { if (selectedStage.color !== c) e.currentTarget.style.borderColor = 'var(--bd)' }}
                           >
-                            <div style={{ width: 18, height: 10, borderRadius: 3, background: c }} />
+                            <div style={{ width: 22, height: 10, borderRadius: 3, background: c }} />
                           </button>
                         ))}
                       </div>
