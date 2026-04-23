@@ -53,15 +53,7 @@ export default function DPIPage() {
                   background: stage.color, boxShadow: `0 0 5px ${stage.color}`,
                 }} />
               )}
-              <div style={{
-                padding: '3px 4px',
-                borderRadius: 4,
-                border: '1px solid var(--bd)',
-                background: 'var(--bg3)',
-                display: 'inline-flex',
-              }}>
-                <div style={{ width: 16, height: 6, borderRadius: 2, background: stage.color }} />
-              </div>
+              <div style={{ width: 14, height: 14, borderRadius: 3, background: stage.color }} />
               <div>
                 <div style={{ fontSize: 22, fontWeight: 800, lineHeight: 1, color: 'var(--tx)', fontVariantNumeric: 'tabular-nums' }}>
                   {stage.value >= 1000 ? `${stage.value / 1000}K` : stage.value}
@@ -142,13 +134,18 @@ export default function DPIPage() {
                         {row.map(c => (
                           <button key={c} onClick={() => setDpiStageColor(selectedStageIdx, c)}
                             style={{
-                              width: 30, height: 30, borderRadius: 6, background: c, flexShrink: 0,
-                              border: selectedStage.color === c ? '2px solid var(--tx)' : '2px solid transparent',
-                              cursor: 'pointer', padding: 0, outline: 'none', transition: 'transform 0.1s',
+                              width: 34, height: 28, borderRadius: 6, flexShrink: 0,
+                              border: selectedStage.color === c ? `1.5px solid ${c}` : '1.5px solid var(--bd)',
+                              background: selectedStage.color === c ? `${c}18` : 'var(--bg3)',
+                              cursor: 'pointer', padding: 0, outline: 'none',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              transition: 'all 0.12s',
                             }}
-                            onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.12)')}
-                            onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
-                          />
+                            onMouseEnter={e => { if (selectedStage.color !== c) e.currentTarget.style.borderColor = c }}
+                            onMouseLeave={e => { if (selectedStage.color !== c) e.currentTarget.style.borderColor = 'var(--bd)' }}
+                          >
+                            <div style={{ width: 18, height: 10, borderRadius: 3, background: c }} />
+                          </button>
                         ))}
                       </div>
                     ))}
