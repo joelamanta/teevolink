@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Trash2, Edit2, Check, X, Circle } from 'lucide-react'
+import { Plus, Trash2, Edit2, X, Circle } from 'lucide-react'
 import { useDeviceStore } from '../../store/deviceStore'
 import type { MacroEvent } from '../../store/deviceStore'
 
