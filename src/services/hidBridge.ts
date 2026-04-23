@@ -47,7 +47,20 @@ function isConnected() {
 }
 
 // ── Button key-function mapping ────────────────────────────────────────────────
-function keyFunctionToFn(type: number, param: number): string {
+// mediaCode is the 4-char hex string for Set_MS_Multimedia (e.g. '00E9')
+type KeyFn = { type: number; param: number; mediaCode?: string }
+
+// HID Consumer Control codes → UI function name
+const MEDIA_CODE_TO_FN: Record<number, string> = {
+  0x00CD: 'Play / Pause',
+  0x00B5: 'Next Track',
+  0x00B6: 'Prev Track',
+  0x00E9: 'Volume Up',
+  0x00EA: 'Volume Down',
+  0x00E2: 'Mute',
+}
+
+function keyFunctionToFn(type: number, param: number, shortCutEntry?: any): string {
   switch (type) {
     case 0x00: return 'Disabled'
     case 0x01:
@@ -67,6 +80,15 @@ function keyFunctionToFn(type: number, param: number): string {
         default:     return 'DPI Switch'
       }
     case 0x04: return 'Fire Button'
+    case 0x05: {
+      // ShortcutKey — check shortCutEntry from device flash for the media code
+      if (shortCutEntry?.isMedia && shortCutEntry.contexts?.length > 0) {
+        const raw = shortCutEntry.contexts[0]?.value ?? ''
+        const code = parseInt(String(raw).replace('0x', ''), 16)
+        return MEDIA_CODE_TO_FN[code] ?? 'Media Key'
+      }
+      return 'Media Key'
+    }
     case 0x09:
       switch (param) {
         case 0: return 'Profile 1'
@@ -75,12 +97,12 @@ function keyFunctionToFn(type: number, param: number): string {
         case 3: return 'Profile 4'
         default: return 'Profile Cycle'
       }
-    case 0x0A: return 'DPI Lock'
+    case 0x0A: return 'Sniper Mode'
     default:   return 'Disabled'
   }
 }
 
-function fnToKeyFunction(fn: string): { type: number; param: number } | null {
+function fnToKeyFunction(fn: string): KeyFn | null {
   switch (fn) {
     case 'Left Click':     return { type: 0x01, param: 0x0001 }
     case 'Right Click':    return { type: 0x01, param: 0x0002 }
@@ -92,13 +114,21 @@ function fnToKeyFunction(fn: string): { type: number; param: number } | null {
     case 'DPI Down':       return { type: 0x02, param: 0x0002 }
     case 'DPI Loop':       return { type: 0x02, param: 0x0003 }
     case 'Fire Button':    return { type: 0x04, param: 0x0000 }
+    // Media keys — type=0x05 marks button as ShortcutKey; mediaCode sent via Set_MS_Multimedia
+    case 'Play / Pause':   return { type: 0x05, param: 0x0000, mediaCode: '00CD' }
+    case 'Next Track':     return { type: 0x05, param: 0x0000, mediaCode: '00B5' }
+    case 'Prev Track':     return { type: 0x05, param: 0x0000, mediaCode: '00B6' }
+    case 'Volume Up':      return { type: 0x05, param: 0x0000, mediaCode: '00E9' }
+    case 'Volume Down':    return { type: 0x05, param: 0x0000, mediaCode: '00EA' }
+    case 'Mute':           return { type: 0x05, param: 0x0000, mediaCode: '00E2' }
     case 'Profile 1':      return { type: 0x09, param: 0x0000 }
     case 'Profile 2':      return { type: 0x09, param: 0x0001 }
     case 'Profile 3':      return { type: 0x09, param: 0x0002 }
     case 'Profile 4':      return { type: 0x09, param: 0x0003 }
     case 'Profile Cycle':  return { type: 0x09, param: 0x0004 }
+    case 'Sniper Mode':    return { type: 0x0A, param: 400 }  // DPI Lock at 400
     case 'Disabled':       return { type: 0x00, param: 0x0000 }
-    default:               return null  // media, macros, sniper — not yet supported
+    default:               return null  // Double Click, Macro — not yet supported
   }
 }
 
@@ -126,13 +156,18 @@ function syncToStore() {
     ? rgbToHex(rawColor)
     : rawColor
 
-  // Button map — parse keys array from device flash
-  const keys = (cfg.keys ?? []) as any[]
+  // Button map — parse keys[] + shortCutKey[] from device flash
+  const keys      = (cfg.keys ?? []) as any[]
+  const shortCuts = (cfg.shortCutKey ?? []) as any[]
   const buttonMap = keys.slice(0, TERRA_PRO_KEYS_COUNT).map((k: any, i: number) => {
-    const arr: any[] = Array.isArray(k) ? k : (k?.value ?? [])
+    const arr   = Array.isArray(k) ? k : (k?.value ?? [])
     const type  = parseInt(arr[0] ?? '0', 16)
     const param = parseInt(String(arr[1] ?? '0x0000').replace('0x', ''), 16)
-    return { id: i, label: BTN_LABELS[i] ?? `B${i}`, fn: keyFunctionToFn(type, param) }
+    return {
+      id:    i,
+      label: BTN_LABELS[i] ?? `B${i}`,
+      fn:    keyFunctionToFn(type, param, shortCuts[i]),
+    }
   })
 
   useDeviceStore.getState().loadFromDevice({
@@ -192,7 +227,6 @@ function setupSubscriptions() {
   dDpiColor  = debounce((i: number, c: string) => { HIDHandle.Set_MS_DPIColor(i, hexToRgb(c)) }, 400)
   dLightColor = debounce((c: string) => { HIDHandle.Set_MS_LightColor(hexToRgb(c)) }, 400)
 
-  // Single subscriber — diff state vs previous state for every field we care about
   unsubscribers.push(
     useDeviceStore.subscribe((s, prev) => {
       if (!isConnected()) return
@@ -234,7 +268,9 @@ function setupSubscriptions() {
         const p = prev.buttonMap[i]
         if (!p || btn.fn === p.fn) return
         const kf = fnToKeyFunction(btn.fn)
-        if (kf) HIDHandle.Set_MS_KeyFunction(i, kf)
+        if (!kf) return
+        HIDHandle.Set_MS_KeyFunction(i, { type: kf.type, param: kf.param })
+        if (kf.mediaCode) HIDHandle.Set_MS_Multimedia(i, kf.mediaCode)
       })
     })
   )
@@ -273,7 +309,6 @@ export const hidBridge = {
         return { success: false, error: 'No device selected or device not recognised' }
       }
 
-      // Device_Connect → Device_Connect → Read_Mouse_Flash → Update_Mouse_Info
       await HIDHandle.Device_Connect()
 
       syncToStore()

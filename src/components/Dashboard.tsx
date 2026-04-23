@@ -2,13 +2,16 @@ import { Outlet } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Battery, BatteryCharging, Zap, Crosshair, Wifi } from 'lucide-react'
 import { useDeviceStore } from '../store/deviceStore'
+import { useConnectionStore } from '../store/connectionStore'
 import { useLang } from '../contexts/LangContext'
 
 export default function Dashboard() {
   const { dpiStages, activeDpi, reportRate, battery } = useDeviceStore()
+  const { isWired, deviceVersion, dongleVersion, status } = useConnectionStore()
   const { t } = useLang()
   const activeStage = dpiStages[activeDpi] ?? dpiStages[0]
   const c = activeStage.color
+  const connected = status === 'connected'
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -18,7 +21,7 @@ export default function Dashboard() {
         <StatCell icon={<BatteryCharging size={13} />} label={t('stat.battery')}    value={`${battery.level}%`}                sub={battery.charging ? t('stat.charging') : t('stat.onBattery')} />
         <StatCell icon={<Crosshair size={13} />}       label={t('stat.dpi')}        value={activeStage.value.toLocaleString()} sub={`${t('dpi.stage')} ${activeDpi + 1} / ${dpiStages.length}`} color={c} />
         <StatCell icon={<Zap size={13} />}             label={t('stat.pollRate')}   value={`${reportRate >= 1000 ? reportRate / 1000 + 'K' : reportRate}Hz`} sub={reportRate >= 2000 ? t('stat.highPerf') : t('stat.standard')} />
-        <StatCell icon={<Wifi size={13} />}            label={t('stat.connection')} value={t('stat.wireless')} sub="4K · –62 dBm" />
+        <StatCell icon={<Wifi size={13} />}            label={t('stat.connection')} value={connected ? (isWired ? 'USB' : 'Wireless') : '—'} sub={connected ? (isWired ? 'Wired' : '2.4G Wireless') : t('shell.disconnected')} />
       </div>
 
       {/* ── Body ── */}
@@ -103,9 +106,9 @@ export default function Dashboard() {
             {/* Device info */}
             <div style={{ background: 'var(--bg2)', border: '1px solid var(--bd)', borderRadius: 'var(--rl)', padding: '8px 14px', display: 'flex', flexDirection: 'column', gap: 5 }}>
               {[
-                [t('dash.firmware'), 'v1.0.4'],
-                [t('dash.receiver'), 'v1.0'],
-                [t('dash.mode'), '4K Wireless'],
+                [t('dash.firmware'), connected ? deviceVersion : '--'],
+                [t('dash.receiver'), connected ? dongleVersion : '--'],
+                [t('dash.mode'),     connected ? (isWired ? 'Wired USB' : '2.4G Wireless') : '--'],
               ].map(([k, v]) => (
                 <div key={k} style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ fontSize: 11, color: 'var(--tx3)' }}>{k}</span>
