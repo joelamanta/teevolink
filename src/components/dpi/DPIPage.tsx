@@ -5,7 +5,8 @@ import { useDeviceStore, STAGE_COLORS } from '../../store/deviceStore'
 import { useLang } from '../../contexts/LangContext'
 
 const REPORT_RATES = [125, 250, 500, 1000, 2000, 4000, 8000]
-const DPI_PRESETS  = [200, 400, 800, 1200, 1600, 2400, 3200, 6400, 12800, 16000, 19000, 26000]
+const DPI_PRESETS  = [200, 400, 800, 1200, 1600, 2400, 3200, 6400, 12800, 16000, 19000, 26000, 30000, 42000]
+const DPI_MIN = 200, DPI_MAX = 42000, DPI_STEP = 50
 
 export default function DPIPage() {
   const {
@@ -59,7 +60,7 @@ export default function DPIPage() {
                 <div style={{ fontSize: 22, fontWeight: 800, lineHeight: 1, color: 'var(--tx)', fontVariantNumeric: 'tabular-nums' }}>
                   {stage.value >= 1000 ? `${stage.value / 1000}K` : stage.value}
                 </div>
-                <div style={{ fontSize: 11, color: 'var(--tx3)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('dpi.unit')}</div>
+                <div style={{ fontSize: 11, color: 'var(--tx3)', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'left' }}>{t('dpi.unit')}</div>
               </div>
             </motion.button>
           ))}
@@ -103,8 +104,8 @@ export default function DPIPage() {
               action={
                 dpiStages.length > 1 ? (
                   <button onClick={() => removeDpiStage(selectedStageIdx)} style={iconBtnStyle}
-                    onMouseEnter={e => (e.currentTarget.style.color = 'var(--rdx)')}
-                    onMouseLeave={e => (e.currentTarget.style.color = 'var(--tx3)')}>
+                    onMouseEnter={e => { e.currentTarget.style.color = 'var(--rdx)'; e.currentTarget.style.borderColor = 'var(--rdx)' }}
+                    onMouseLeave={e => { e.currentTarget.style.color = 'var(--tx3)'; e.currentTarget.style.borderColor = 'var(--bd)' }}>
                     <Trash2 size={12} />
                   </button>
                 ) : undefined
@@ -155,6 +156,27 @@ export default function DPIPage() {
                         ))}
                       </div>
                     ))}
+                    {/* Custom color picker */}
+                    {(() => {
+                      const isCustom = !STAGE_COLORS.includes(selectedStage.color)
+                      return (
+                        <label style={{
+                          position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                          height: 32, borderRadius: 6, cursor: 'pointer',
+                          border: isCustom ? `1.5px solid ${selectedStage.color}` : '1.5px solid var(--bd)',
+                          background: isCustom ? `${selectedStage.color}18` : 'var(--bg3)',
+                          transition: 'all 0.12s', overflow: 'hidden',
+                        }}>
+                          <input type="color"
+                            value={selectedStage.color.startsWith('#') ? selectedStage.color : '#78BE1F'}
+                            onChange={e => setDpiStageColor(selectedStageIdx, e.target.value)}
+                            style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', width: '100%', height: '100%', padding: 0, border: 'none' }}
+                          />
+                          <div style={{ width: 16, height: 10, borderRadius: 3, background: selectedStage.color, pointerEvents: 'none' }} />
+                          <span style={{ fontSize: 10, fontWeight: 600, color: isCustom ? selectedStage.color : 'var(--tx3)', textTransform: 'uppercase', letterSpacing: '0.06em', pointerEvents: 'none' }}>Custom</span>
+                        </label>
+                      )
+                    })()}
                   </div>
                 </div>
               </div>
@@ -209,11 +231,11 @@ export default function DPIPage() {
 
 // ─── Slider ───────────────────────────────────────────────────
 function DPISlider({ value, color, onChange }: { value: number; color: string; onChange: (v: number) => void }) {
-  const min = 200, max = 26000
-  const pct = ((value - min) / (max - min)) * 100
+  const min = DPI_MIN, max = DPI_MAX
+  const pct = Math.min(100, ((value - min) / (max - min)) * 100)
   function handleClick(e: React.MouseEvent<HTMLDivElement>) {
     const rect = e.currentTarget.getBoundingClientRect()
-    const raw = Math.round((min + Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width)) * (max - min)) / 100) * 100
+    const raw = Math.round((min + Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width)) * (max - min)) / DPI_STEP) * DPI_STEP
     onChange(Math.max(min, Math.min(max, raw)))
   }
   return (
@@ -239,46 +261,51 @@ function EditableDPI({ value, color, onChange }: { value: number; color: string;
 
   function commit(str: string) {
     const n = parseInt(str)
-    if (!isNaN(n) && n >= 200 && n <= 26000) onChange(Math.round(n / 50) * 50)
+    if (!isNaN(n) && n >= DPI_MIN && n <= DPI_MAX) onChange(Math.round(n / DPI_STEP) * DPI_STEP)
     setEditing(false)
   }
 
-  if (editing) {
-    return (
-      <input
-        autoFocus
-        type="number"
-        defaultValue={value}
-        min={200} max={26000} step={50}
-        onChange={e => setRaw(e.target.value)}
-        onBlur={e => commit(e.target.value)}
-        onKeyDown={e => { if (e.key === 'Enter') commit(raw || String(value)); if (e.key === 'Escape') setEditing(false) }}
-        style={{
-          width: 96, fontSize: 13, fontWeight: 700, color,
-          background: 'var(--bg2)', border: `1px solid ${color}55`,
-          borderRadius: 4, padding: '2px 8px', fontFamily: 'inherit',
-          fontVariantNumeric: 'tabular-nums', outline: 'none', textAlign: 'right',
-        }}
-      />
-    )
-  }
+  const dec = () => onChange(Math.max(DPI_MIN, Math.round((value - DPI_STEP) / DPI_STEP) * DPI_STEP))
+  const inc = () => onChange(Math.min(DPI_MAX, Math.round((value + DPI_STEP) / DPI_STEP) * DPI_STEP))
 
   return (
-    <button
-      onClick={() => { setEditing(true); setRaw(String(value)) }}
-      title="Click to enter a custom DPI value"
-      style={{
-        fontSize: 13, fontWeight: 600, color,
-        background: 'transparent', border: '1px dashed transparent',
-        borderRadius: 4, cursor: 'text', fontFamily: 'inherit',
-        fontVariantNumeric: 'tabular-nums', padding: '2px 6px',
-        transition: 'border-color 0.12s',
-      }}
-      onMouseEnter={e => (e.currentTarget.style.borderColor = `${color}50`)}
-      onMouseLeave={e => (e.currentTarget.style.borderColor = 'transparent')}
-    >
-      {value.toLocaleString()} DPI
-    </button>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+      <button onClick={dec} style={stepBtn}>−</button>
+      {editing ? (
+        <input
+          autoFocus
+          type="number"
+          defaultValue={value}
+          min={DPI_MIN} max={DPI_MAX} step={DPI_STEP}
+          onChange={e => setRaw(e.target.value)}
+          onBlur={e => commit(e.target.value)}
+          onKeyDown={e => { if (e.key === 'Enter') commit(raw || String(value)); if (e.key === 'Escape') setEditing(false) }}
+          style={{
+            width: 88, fontSize: 13, fontWeight: 700, color,
+            background: 'var(--bg2)', border: `1px solid ${color}55`,
+            borderRadius: 4, padding: '2px 6px', fontFamily: 'inherit',
+            fontVariantNumeric: 'tabular-nums', outline: 'none', textAlign: 'center',
+          }}
+        />
+      ) : (
+        <button
+          onClick={() => { setEditing(true); setRaw(String(value)) }}
+          title="Click to type a custom DPI value"
+          style={{
+            fontSize: 13, fontWeight: 600, color,
+            background: 'transparent', border: '1px dashed transparent',
+            borderRadius: 4, cursor: 'text', fontFamily: 'inherit',
+            fontVariantNumeric: 'tabular-nums', padding: '2px 6px',
+            transition: 'border-color 0.12s',
+          }}
+          onMouseEnter={e => (e.currentTarget.style.borderColor = `${color}50`)}
+          onMouseLeave={e => (e.currentTarget.style.borderColor = 'transparent')}
+        >
+          {value.toLocaleString()} DPI
+        </button>
+      )}
+      <button onClick={inc} style={stepBtn}>+</button>
+    </div>
   )
 }
 
@@ -334,4 +361,4 @@ function Stepper({ value, onDec, onInc }: { value: string; onDec: () => void; on
 }
 
 const stepBtn: React.CSSProperties = { width: 22, height: 22, borderRadius: 4, border: '1px solid var(--bd)', background: 'var(--bg2)', color: 'var(--tx2)', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0, fontFamily: 'inherit', lineHeight: 1 }
-const iconBtnStyle: React.CSSProperties = { background: 'none', border: 'none', cursor: 'pointer', color: 'var(--tx3)', display: 'flex', padding: 4, borderRadius: 4, transition: 'color 0.12s' }
+const iconBtnStyle: React.CSSProperties = { background: 'var(--bg2)', border: '1px solid var(--bd)', cursor: 'pointer', color: 'var(--tx3)', display: 'flex', padding: 5, borderRadius: 5, transition: 'color 0.12s, border-color 0.12s' }

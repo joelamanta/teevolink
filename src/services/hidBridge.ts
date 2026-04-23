@@ -269,8 +269,8 @@ function setupSubscriptions() {
         if (!p || btn.fn === p.fn) return
         const kf = fnToKeyFunction(btn.fn)
         if (!kf) return
-        HIDHandle.Set_MS_KeyFunction(i, { type: kf.type, param: kf.param })
-        if (kf.mediaCode) HIDHandle.Set_MS_Multimedia(i, kf.mediaCode)
+        HIDHandle.Set_MS_KeyFunction(btn.id, { type: kf.type, param: kf.param })
+        if (kf.mediaCode) HIDHandle.Set_MS_Multimedia(btn.id, kf.mediaCode)
       })
     })
   )

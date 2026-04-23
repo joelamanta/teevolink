@@ -25,6 +25,7 @@ export default function Shell() {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const { t } = useLang()
+  const { status } = useConnectionStore()
 
   const w = collapsed ? SIDEBAR_W_COLLAPSED : SIDEBAR_W
 
@@ -71,9 +72,8 @@ export default function Shell() {
           display: 'flex', alignItems: 'center',
           padding: collapsed ? '0 14px' : '0 16px',
           borderBottom: '1px solid var(--bd)',
-          gap: 10, overflow: 'hidden', flexShrink: 0,
+          overflow: 'hidden', flexShrink: 0,
         }}>
-          <TeevoLogo />
           <AnimatePresence mode="wait">
             {!collapsed && (
               <motion.div
@@ -82,20 +82,16 @@ export default function Shell() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -6 }}
                 transition={{ duration: 0.15 }}
-                style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}
               >
                 <LogoWordmark />
-                <span style={{ fontSize: 10, fontWeight: 500, color: 'var(--ac)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                  TeevoLink
-                </span>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
 
-        {/* Device status */}
+        {/* Device status — hidden once connected */}
         <AnimatePresence>
-          {!collapsed && (
+          {!collapsed && status !== 'connected' && (
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
@@ -269,7 +265,6 @@ function Topbar({ onHamburger }: { onHamburger: () => void }) {
 
       <div style={{ flex: 1 }}>
         <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--tx)' }}>Terra Pro</span>
-        <span style={{ marginLeft: 8, fontSize: 12, color: 'var(--tx3)' }}>by Teevolution</span>
       </div>
 
       <ConnectionBadge />
@@ -401,17 +396,6 @@ function ProfileTabs() {
           {p}
         </button>
       ))}
-    </div>
-  )
-}
-
-function TeevoLogo() {
-  return (
-    <div style={{
-      width: 28, height: 28, background: 'var(--ac)', borderRadius: 7,
-      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-    }}>
-      <img src="/favicon.svg" width="16" height="14" alt="" />
     </div>
   )
 }
