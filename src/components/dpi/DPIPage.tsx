@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Trash2 } from 'lucide-react'
 import { useDeviceStore, STAGE_COLORS } from '../../store/deviceStore'
@@ -92,8 +93,13 @@ export default function DPIPage() {
           <motion.div key={selectedStage.id} initial={{ opacity: 0, y: 3 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.13 }}>
             <Section
               title={`${t('dpi.stage')} ${selectedStageIdx + 1}`}
-              right={selectedStage.value.toLocaleString() + ' DPI'}
-              rightColor={selectedStage.color}
+              right={
+                <EditableDPI
+                  value={selectedStage.value}
+                  color={selectedStage.color}
+                  onChange={v => setDpiStageValue(selectedStageIdx, v)}
+                />
+              }
               action={
                 dpiStages.length > 1 ? (
                   <button onClick={() => removeDpiStage(selectedStageIdx)} style={iconBtnStyle}
@@ -104,9 +110,9 @@ export default function DPIPage() {
                 ) : undefined
               }
             >
-              <div style={{ display: 'flex', gap: 14 }}>
-                {/* Left: value */}
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ display: 'flex', gap: 18 }}>
+                {/* Left: presets + slider — capped so color section gets breathing room */}
+                <div style={{ flex: '0 0 52%', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <SmallLabel>{t('dpi.value')}</SmallLabel>
                   <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
                     {DPI_PRESETS.map(p => (
@@ -126,7 +132,7 @@ export default function DPIPage() {
                 </div>
 
                 {/* Right: color */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <SmallLabel>{t('dpi.color')}</SmallLabel>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                     {[STAGE_COLORS.slice(0, 4), STAGE_COLORS.slice(4)].map((row, ri) => (
@@ -227,15 +233,66 @@ function DPISlider({ value, color, onChange }: { value: number; color: string; o
 }
 
 // ─── Layout helpers ───────────────────────────────────────────
+function EditableDPI({ value, color, onChange }: { value: number; color: string; onChange: (v: number) => void }) {
+  const [editing, setEditing] = useState(false)
+  const [raw, setRaw] = useState('')
+
+  function commit(str: string) {
+    const n = parseInt(str)
+    if (!isNaN(n) && n >= 200 && n <= 26000) onChange(Math.round(n / 50) * 50)
+    setEditing(false)
+  }
+
+  if (editing) {
+    return (
+      <input
+        autoFocus
+        type="number"
+        defaultValue={value}
+        min={200} max={26000} step={50}
+        onChange={e => setRaw(e.target.value)}
+        onBlur={e => commit(e.target.value)}
+        onKeyDown={e => { if (e.key === 'Enter') commit(raw || String(value)); if (e.key === 'Escape') setEditing(false) }}
+        style={{
+          width: 96, fontSize: 13, fontWeight: 700, color,
+          background: 'var(--bg2)', border: `1px solid ${color}55`,
+          borderRadius: 4, padding: '2px 8px', fontFamily: 'inherit',
+          fontVariantNumeric: 'tabular-nums', outline: 'none', textAlign: 'right',
+        }}
+      />
+    )
+  }
+
+  return (
+    <button
+      onClick={() => { setEditing(true); setRaw(String(value)) }}
+      title="Click to enter a custom DPI value"
+      style={{
+        fontSize: 13, fontWeight: 600, color,
+        background: 'transparent', border: '1px dashed transparent',
+        borderRadius: 4, cursor: 'text', fontFamily: 'inherit',
+        fontVariantNumeric: 'tabular-nums', padding: '2px 6px',
+        transition: 'border-color 0.12s',
+      }}
+      onMouseEnter={e => (e.currentTarget.style.borderColor = `${color}50`)}
+      onMouseLeave={e => (e.currentTarget.style.borderColor = 'transparent')}
+    >
+      {value.toLocaleString()} DPI
+    </button>
+  )
+}
+
 function Section({ title, right, rightColor, action, children }: {
-  title: string; right?: string; rightColor?: string; action?: React.ReactNode; children: React.ReactNode
+  title: string; right?: React.ReactNode; rightColor?: string; action?: React.ReactNode; children: React.ReactNode
 }) {
   return (
     <div style={{ background: 'var(--bg)', border: '1px solid var(--bd)', borderRadius: 'var(--rl)', padding: '11px 13px', display: 'flex', flexDirection: 'column', gap: 10 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--tx)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{title}</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          {right && <span style={{ fontSize: 13, fontWeight: 600, color: rightColor ?? 'var(--tx3)' }}>{right}</span>}
+          {right && (typeof right === 'string'
+            ? <span style={{ fontSize: 13, fontWeight: 600, color: rightColor ?? 'var(--tx3)' }}>{right}</span>
+            : right)}
           {action}
         </div>
       </div>
