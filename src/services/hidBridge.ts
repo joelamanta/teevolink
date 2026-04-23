@@ -46,6 +46,64 @@ function isConnected() {
   return useConnectionStore.getState().status === 'connected'
 }
 
+// ── Button key-function mapping ────────────────────────────────────────────────
+function keyFunctionToFn(type: number, param: number): string {
+  switch (type) {
+    case 0x00: return 'Disabled'
+    case 0x01:
+      switch (param) {
+        case 0x0001: return 'Left Click'
+        case 0x0002: return 'Right Click'
+        case 0x0004: return 'Middle Click'
+        case 0x0008: return 'Back Button'
+        case 0x0010: return 'Forward Button'
+        default:     return 'Left Click'
+      }
+    case 0x02:
+      switch (param) {
+        case 0x0001: return 'DPI Up'
+        case 0x0002: return 'DPI Down'
+        case 0x0003: return 'DPI Loop'
+        default:     return 'DPI Switch'
+      }
+    case 0x04: return 'Fire Button'
+    case 0x09:
+      switch (param) {
+        case 0: return 'Profile 1'
+        case 1: return 'Profile 2'
+        case 2: return 'Profile 3'
+        case 3: return 'Profile 4'
+        default: return 'Profile Cycle'
+      }
+    case 0x0A: return 'DPI Lock'
+    default:   return 'Disabled'
+  }
+}
+
+function fnToKeyFunction(fn: string): { type: number; param: number } | null {
+  switch (fn) {
+    case 'Left Click':     return { type: 0x01, param: 0x0001 }
+    case 'Right Click':    return { type: 0x01, param: 0x0002 }
+    case 'Middle Click':   return { type: 0x01, param: 0x0004 }
+    case 'Back Button':    return { type: 0x01, param: 0x0008 }
+    case 'Forward Button': return { type: 0x01, param: 0x0010 }
+    case 'DPI Switch':     return { type: 0x02, param: 0x0000 }
+    case 'DPI Up':         return { type: 0x02, param: 0x0001 }
+    case 'DPI Down':       return { type: 0x02, param: 0x0002 }
+    case 'DPI Loop':       return { type: 0x02, param: 0x0003 }
+    case 'Fire Button':    return { type: 0x04, param: 0x0000 }
+    case 'Profile 1':      return { type: 0x09, param: 0x0000 }
+    case 'Profile 2':      return { type: 0x09, param: 0x0001 }
+    case 'Profile 3':      return { type: 0x09, param: 0x0002 }
+    case 'Profile 4':      return { type: 0x09, param: 0x0003 }
+    case 'Profile Cycle':  return { type: 0x09, param: 0x0004 }
+    case 'Disabled':       return { type: 0x00, param: 0x0000 }
+    default:               return null  // media, macros, sniper — not yet supported
+  }
+}
+
+const BTN_LABELS = ['Left Click', 'Right Click', 'Middle Click', 'Back', 'Forward', 'DPI Button']
+
 // ── Sync driver state → Zustand store ─────────────────────────────────────────
 function syncToStore() {
   const d   = HIDHandle.deviceInfo as any
@@ -68,6 +126,15 @@ function syncToStore() {
     ? rgbToHex(rawColor)
     : rawColor
 
+  // Button map — parse keys array from device flash
+  const keys = (cfg.keys ?? []) as any[]
+  const buttonMap = keys.slice(0, TERRA_PRO_KEYS_COUNT).map((k: any, i: number) => {
+    const arr: any[] = Array.isArray(k) ? k : (k?.value ?? [])
+    const type  = parseInt(arr[0] ?? '0', 16)
+    const param = parseInt(String(arr[1] ?? '0x0000').replace('0x', ''), 16)
+    return { id: i, label: BTN_LABELS[i] ?? `B${i}`, fn: keyFunctionToFn(type, param) }
+  })
+
   useDeviceStore.getState().loadFromDevice({
     dpiStages,
     activeDpi,
@@ -84,8 +151,12 @@ function syncToStore() {
     lod:         cfg.sensor?.lod ?? 1,
     debounce:    cfg.debounceTime ?? 8,
     angleSnap:   !!cfg.sensor?.angle,
-    battery: { level: bat?.level ?? 0, charging: !!bat?.charging },
+    battery:     { level: bat?.level ?? 0, charging: !!bat?.charging },
+    buttonMap:   buttonMap.length > 0 ? buttonMap : undefined,
   })
+
+  // Sync active profile to connection store
+  useConnectionStore.getState().setActiveProfile(d.profile ?? 0)
 }
 
 // ── Init Terra Pro device config on the driver's deviceInfo ───────────────────
@@ -157,6 +228,14 @@ function setupSubscriptions() {
       if (s.debounce   !== prev.debounce)   HIDHandle.Set_MS_DebounceTime(s.debounce)
       if (s.sleepTime  !== prev.sleepTime)  HIDHandle.Set_MS_LightOffTime(s.sleepTime)
       if (s.longRange  !== prev.longRange)  HIDHandle.Set_Device_LongDistance(s.longRange ? 1 : 0)
+
+      // Button map — write only changed buttons
+      s.buttonMap.forEach((btn, i) => {
+        const p = prev.buttonMap[i]
+        if (!p || btn.fn === p.fn) return
+        const kf = fnToKeyFunction(btn.fn)
+        if (kf) HIDHandle.Set_MS_KeyFunction(i, kf)
+      })
     })
   )
 
@@ -220,5 +299,13 @@ export const hidBridge = {
     cleanup()
     try { await HIDHandle.Device_Close() } catch (_) { /* ignore */ }
     useConnectionStore.getState().reset()
+  },
+
+  async setProfile(i: number): Promise<void> {
+    if (!isConnected()) return
+    try {
+      await HIDHandle.Set_Device_Profile(i)
+      syncToStore()
+    } catch (_) { /* ignore */ }
   },
 }

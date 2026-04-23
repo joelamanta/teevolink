@@ -8,6 +8,7 @@ import {
 import { useLang } from '../contexts/LangContext'
 import { useTheme } from '../contexts/ThemeContext'
 import { useConnectionStore } from '../store/connectionStore'
+import { hidBridge } from '../services/hidBridge'
 
 const NAV_ITEMS = [
   { to: '/dashboard',          icon: <Crosshair size={16} />,     labelKey: 'nav.dpi' },
@@ -374,18 +375,26 @@ function ThemeToggle() {
 }
 
 function ProfileTabs() {
-  const [active, setActive] = useState(0)
+  const { activeProfile, status } = useConnectionStore()
   const profiles = ['P1', 'P2', 'P3', 'P4']
+  const disabled = status !== 'connected'
   return (
-    <div style={{ display: 'flex', gap: 2, background: 'var(--bg2)', padding: 3, borderRadius: 'var(--rl)', border: '1px solid var(--bd)' }}>
+    <div style={{
+      display: 'flex', gap: 2, background: 'var(--bg2)', padding: 3,
+      borderRadius: 'var(--rl)', border: '1px solid var(--bd)',
+      opacity: disabled ? 0.45 : 1, transition: 'opacity 0.15s',
+    }}>
       {profiles.map((p, i) => (
-        <button key={i} onClick={() => setActive(i)}
+        <button key={i}
+          onClick={() => { if (!disabled) hidBridge.setProfile(i) }}
+          disabled={disabled}
           style={{
             padding: '4px 12px', borderRadius: 5, border: 'none', fontSize: 11, fontWeight: 600,
-            textTransform: 'uppercase', letterSpacing: '0.06em', cursor: 'pointer',
-            background: active === i ? 'var(--bg)' : 'transparent',
-            color: active === i ? 'var(--tx)' : 'var(--tx3)',
-            boxShadow: active === i ? 'var(--sh)' : 'none',
+            textTransform: 'uppercase', letterSpacing: '0.06em',
+            cursor: disabled ? 'default' : 'pointer',
+            background: activeProfile === i ? 'var(--bg)' : 'transparent',
+            color: activeProfile === i ? 'var(--tx)' : 'var(--tx3)',
+            boxShadow: activeProfile === i ? 'var(--sh)' : 'none',
             transition: 'background var(--t-fast), color var(--t-fast)',
           }}
         >

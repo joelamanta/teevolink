@@ -36,19 +36,6 @@ export default function Dashboard() {
           {/* Mouse stage */}
           <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 0 }}>
 
-            {/* Floating shadow — dark ellipse cast below mouse */}
-            <div style={{
-              position: 'absolute',
-              bottom: '13%', left: '50%',
-              transform: 'translateX(-50%)',
-              width: 160, height: 16,
-              background: 'rgba(0,0,0,0.55)',
-              borderRadius: '50%',
-              filter: 'blur(12px)',
-              pointerEvents: 'none',
-              zIndex: 0,
-            }} />
-
             {/* Mouse + shadow wrapper */}
             <div style={{ width: '96%', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', zIndex: 1 }}>
               <img

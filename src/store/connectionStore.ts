@@ -10,6 +10,7 @@ interface ConnectionState {
   isWired: boolean
   deviceVersion: string
   dongleVersion: string
+  activeProfile: number
 }
 
 interface ConnectionActions {
@@ -22,6 +23,7 @@ interface ConnectionActions {
   }) => void
   setError: (msg: string) => void
   reset: () => void
+  setActiveProfile: (i: number) => void
 }
 
 const INITIAL: ConnectionState = {
@@ -31,12 +33,14 @@ const INITIAL: ConnectionState = {
   isWired: false,
   deviceVersion: '--',
   dongleVersion: '--',
+  activeProfile: 0,
 }
 
 export const useConnectionStore = create<ConnectionState & ConnectionActions>((set) => ({
   ...INITIAL,
-  setStatus:   (s) => set({ status: s }),
-  setConnected: (info) => set({ status: 'connected', ...info, errorMessage: null }),
-  setError:    (msg) => set({ status: 'error', errorMessage: msg }),
-  reset:       () => set(INITIAL),
+  setStatus:        (s) => set({ status: s }),
+  setConnected:     (info) => set({ status: 'connected', ...info, errorMessage: null }),
+  setError:         (msg) => set({ status: 'error', errorMessage: msg }),
+  reset:            () => set(INITIAL),
+  setActiveProfile: (i) => set({ activeProfile: i }),
 }))

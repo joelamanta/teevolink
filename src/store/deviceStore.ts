@@ -47,6 +47,7 @@ export interface DeviceSnapshot {
   debounce: number
   angleSnap: boolean
   battery: { level: number; charging: boolean }
+  buttonMap?: ButtonBinding[]
 }
 
 interface DeviceActions {
