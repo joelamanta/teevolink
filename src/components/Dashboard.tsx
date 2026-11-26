@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Battery, BatteryCharging, Zap, Crosshair, Wifi } from 'lucide-react'
 import { useDeviceStore } from '../store/deviceStore'
@@ -9,20 +9,35 @@ export default function Dashboard() {
   const { dpiStages, activeDpi, reportRate, battery } = useDeviceStore()
   const { isWired, deviceVersion, dongleVersion, status } = useConnectionStore()
   const { t } = useLang()
+  const location = useLocation()
+  const isReceiver = location.pathname.includes('/receiver')
   const activeStage = dpiStages[activeDpi] ?? dpiStages[0]
   const c = activeStage.color
   const connected = status === 'connected'
 
-  return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-
-      {/* ── Stat bar ── */}
+  const statBar = (
       <div style={{ display: 'flex', borderBottom: '1px solid var(--bd)', flexShrink: 0 }}>
         <StatCell icon={<BatteryCharging size={13} />} label={t('stat.battery')}    value={`${battery.level}%`}                sub={battery.charging ? t('stat.charging') : t('stat.onBattery')} />
         <StatCell icon={<Crosshair size={13} />}       label={t('stat.dpi')}        value={activeStage.value.toLocaleString()} sub={`${t('dpi.stage')} ${activeDpi + 1} / ${dpiStages.length}`} color={c} />
         <StatCell icon={<Zap size={13} />}             label={t('stat.pollRate')}   value={`${reportRate >= 1000 ? reportRate / 1000 + 'K' : reportRate}Hz`} sub={reportRate >= 2000 ? t('stat.highPerf') : t('stat.standard')} />
         <StatCell icon={<Wifi size={13} />}            label={t('stat.connection')} value={connected ? (isWired ? 'USB' : 'Wireless') : '—'} sub={connected ? (isWired ? 'Wired' : '2.4G Wireless') : t('shell.disconnected')} />
       </div>
+  )
+
+  if (isReceiver) {
+    return (
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        {statBar}
+        <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          <Outlet />
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {statBar}
 
       {/* ── Body ── */}
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden', minHeight: 0 }}>

@@ -10,6 +10,7 @@ import LightingPage from './components/lighting/LightingPage'
 import ButtonsPage from './components/buttons/ButtonsPage'
 import MacrosPage from './components/macros/MacrosPage'
 import AdvancedPage from './components/advanced/AdvancedPage'
+import ReceiverScreenPage from './components/receiver/ReceiverScreenPage'
 
 function isWebHIDSupported(): boolean {
   return typeof navigator !== 'undefined' && 'hid' in navigator
@@ -33,6 +34,7 @@ export default function App() {
                 <Route path="buttons" element={<ButtonsPage />} />
                 <Route path="macros" element={<MacrosPage />} />
                 <Route path="advanced" element={<AdvancedPage />} />
+                <Route path="receiver" element={<ReceiverScreenPage />} />
               </Route>
             </Route>
           </Routes>

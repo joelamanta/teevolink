@@ -1,0 +1,185 @@
+/* TeevoLink shell for XD10 Final DEMO — restyles app chrome only.
+   section.preview (570×488 device + hardware row) keeps vendor Final styling. */
+
+html.teevolink-chrome {
+  --bg: #111111;
+  --bg2: #1a1a1a;
+  --bg3: #0d0d0d;
+  --bg-inp: #1e1e1e;
+  --tx: #ededed;
+  --tx2: #909090;
+  --tx3: #555555;
+  --bd: #272727;
+  --bd2: #363636;
+  --ac: #78BE1F;
+  --acd: #96d038;
+  --acl: #1d2e07;
+  --r: 6px;
+  --rl: 8px;
+  --sh: 0 1px 3px rgba(0,0,0,.18), 0 1px 2px rgba(0,0,0,.12);
+}
+
+html.teevolink-chrome body {
+  margin: 0;
+  background: var(--bg3);
+  color: var(--tx);
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", "Microsoft YaHei", sans-serif;
+}
+
+html.teevolink-chrome .tl-doc-bar {
+  display: none !important;
+}
+
+html.teevolink-chrome header {
+  max-width: none;
+  margin: 0;
+  padding: 16px 20px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--bd);
+  color: var(--tx);
+}
+
+html.teevolink-chrome header h1 {
+  color: var(--tx);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+html.teevolink-chrome header .eyebrow {
+  color: var(--tx3);
+}
+
+html.teevolink-chrome header .tag {
+  border-color: var(--bd);
+  background: var(--bg2);
+  color: var(--tx2);
+  border-radius: var(--r);
+  font-size: 11px;
+}
+
+html.teevolink-chrome main {
+  max-width: none;
+  margin: 0;
+  padding: 16px 20px 24px;
+  gap: 20px;
+  grid-template-columns: minmax(360px, 520px) minmax(300px, 1fr);
+}
+
+html.teevolink-chrome aside#pages {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: var(--rl);
+  padding: 14px 16px;
+  box-shadow: var(--sh);
+  align-self: start;
+  max-height: calc(100dvh - 120px);
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.12) transparent;
+}
+
+html.teevolink-chrome aside#pages h2 {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--tx2);
+  margin: 16px 0 10px;
+}
+
+html.teevolink-chrome aside#pages h2:first-child {
+  margin-top: 0;
+}
+
+html.teevolink-chrome aside#pages button,
+html.teevolink-chrome aside#pages .row button {
+  background: var(--bg2);
+  border: 1px solid var(--bd);
+  border-radius: var(--r);
+  color: var(--tx);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+html.teevolink-chrome aside#pages button:hover {
+  border-color: var(--bd2);
+}
+
+html.teevolink-chrome aside#pages .pages button.active {
+  background: var(--acl);
+  color: var(--acd);
+  border-color: var(--ac);
+}
+
+html.teevolink-chrome aside#pages label {
+  color: var(--tx2);
+  font-size: 12px;
+  margin: 8px 0;
+}
+
+html.teevolink-chrome aside#pages input[type="checkbox"],
+html.teevolink-chrome aside#pages input[type="range"] {
+  accent-color: var(--ac);
+}
+
+html.teevolink-chrome aside#pages fieldset {
+  border: 1px solid var(--bd);
+  border-radius: var(--r);
+  background: var(--bg2);
+  padding: 10px 12px;
+  margin: 0 0 12px;
+}
+
+html.teevolink-chrome aside#pages fieldset legend {
+  color: var(--tx2);
+  font-size: 11px;
+  padding: 0 4px;
+}
+
+html.teevolink-chrome aside#pages details {
+  border-top: 1px solid var(--bd);
+  margin-top: 14px;
+  padding-top: 12px;
+}
+
+html.teevolink-chrome aside#pages summary {
+  color: var(--tx);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+html.teevolink-chrome aside#pages input[type="text"],
+html.teevolink-chrome aside#pages input[type="number"],
+html.teevolink-chrome aside#pages select {
+  background: var(--bg-inp);
+  border: 1px solid var(--bd);
+  color: var(--tx);
+  border-radius: var(--r);
+}
+
+html.teevolink-chrome footer {
+  display: none;
+}
+
+html.teevolink-chrome.embed header,
+html.teevolink-chrome.embed footer {
+  display: none !important;
+}
+
+html.teevolink-chrome.embed main {
+  padding: 12px 16px 16px;
+  min-height: calc(100dvh - 8px);
+  box-sizing: border-box;
+}
+
+@media (max-width: 960px) {
+  html.teevolink-chrome main {
+    grid-template-columns: 1fr;
+  }
+  html.teevolink-chrome .preview {
+    position: static;
+  }
+}

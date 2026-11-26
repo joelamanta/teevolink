@@ -9,6 +9,7 @@ const en: Dict = {
   'nav.buttons': 'Buttons',
   'nav.macros': 'Macros',
   'nav.advanced': 'Advanced',
+  'nav.receiver': 'Receiver screen',
 
   // Shell
   'shell.noDevice': 'No device connected',
@@ -127,6 +128,7 @@ const zh: Dict = {
   'nav.buttons': '按键',
   'nav.macros': '宏',
   'nav.advanced': '高级',
+  'nav.receiver': '接收器屏幕',
 
   // Shell
   'shell.noDevice': '未连接设备',

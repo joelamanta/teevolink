@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Crosshair, Zap, Palette, MousePointer2,
-  Settings2, ChevronLeft, ChevronRight, Wifi, WifiOff, Sun, Moon
+  Settings2, Monitor, ChevronLeft, ChevronRight, Wifi, WifiOff, Sun, Moon
 } from 'lucide-react'
 import { useLang } from '../contexts/LangContext'
 import { useTheme } from '../contexts/ThemeContext'
@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { to: '/dashboard/buttons',  icon: <MousePointer2 size={16} />, labelKey: 'nav.buttons' },
   { to: '/dashboard/macros',   icon: <Zap size={16} />,           labelKey: 'nav.macros' },
   { to: '/dashboard/advanced', icon: <Settings2 size={16} />,     labelKey: 'nav.advanced' },
+  { to: '/dashboard/receiver', icon: <Monitor size={16} />,       labelKey: 'nav.receiver' },
 ]
 
 const SIDEBAR_W           = 216
