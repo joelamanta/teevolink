@@ -267,24 +267,40 @@ html.teevolink-chrome aside#pages .tl-aside-foot {
 
 html.teevolink-chrome aside#pages .pages {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 6px;
+  width: 100%;
+}
+
+/* Main display: 3×2 aligns with P1–P5 toggle grid below */
+html.teevolink-chrome aside#pages #mainPages.pages {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* FN settings: 2 columns for longer labels */
+html.teevolink-chrome aside#pages #fnPages.pages {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 html.teevolink-chrome aside#pages .pages button {
-  min-height: 42px;
-  padding: 8px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 8px;
   background: var(--bg2);
   border: 1px solid var(--bd);
   border-radius: var(--r);
   color: var(--tx2);
   font-size: 11px;
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 1.25;
   white-space: normal;
   word-break: break-word;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s, color 0.15s;
+  box-sizing: border-box;
 }
 
 html.teevolink-chrome aside#pages .pages button:hover {
@@ -300,25 +316,25 @@ html.teevolink-chrome aside#pages .pages button.active {
 }
 
 html.teevolink-chrome aside#pages fieldset#pageSwitches {
-  margin: 0;
-  padding: 8px 0 2px;
+  margin: 4px 0 0;
+  padding: 10px;
   border: 1px solid var(--bd);
   border-radius: var(--r);
   background: var(--bg2);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  align-content: flex-start;
-  gap: 8px 14px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
   min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 html.teevolink-chrome aside#pages fieldset#pageSwitches legend {
+  grid-column: 1 / -1;
   display: block;
-  flex: 0 0 100%;
   width: 100%;
-  margin: 0 0 4px;
-  padding: 0 2px;
+  margin: 0 0 2px;
+  padding: 0;
   font-size: 10px;
   font-weight: 600;
   color: var(--tx3);
@@ -327,16 +343,30 @@ html.teevolink-chrome aside#pages fieldset#pageSwitches legend {
 }
 
 html.teevolink-chrome aside#pages fieldset#pageSwitches label {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: flex-start;
   gap: 6px;
   margin: 0;
-  padding: 2px 0;
-  border: none;
-  flex: 0 1 auto;
+  padding: 6px 8px;
+  min-height: 32px;
+  border: 1px solid var(--bd);
+  border-radius: var(--r);
+  background: var(--bg3);
   min-width: 0;
   white-space: normal;
+  font-size: 11px;
+  line-height: 1.2;
+  box-sizing: border-box;
+}
+
+/* Row 2: P4 + P5 align under first two columns (same rhythm as 3×2 buttons) */
+html.teevolink-chrome aside#pages fieldset#pageSwitches label:nth-child(5) {
+  grid-column: 1;
+}
+
+html.teevolink-chrome aside#pages fieldset#pageSwitches label:nth-child(6) {
+  grid-column: 2;
 }
 
 html.teevolink-chrome aside#pages .tl-section-body > label,
