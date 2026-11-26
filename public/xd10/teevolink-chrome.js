@@ -10,7 +10,7 @@
 
   const link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = '/xd10/teevolink-chrome.css?v=2';
+  link.href = '/xd10/teevolink-chrome.css?v=4';
   document.head.appendChild(link);
 
   function structureAside() {

@@ -222,12 +222,13 @@ html.teevolink-chrome aside#pages {
   box-shadow: none;
   align-self: stretch;
   max-height: none;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   gap: 10px;
   scrollbar-gutter: stable;
   min-height: 0;
+  min-width: 0;
 }
 
 html.teevolink-chrome aside#pages .tl-section {
@@ -235,7 +236,8 @@ html.teevolink-chrome aside#pages .tl-section {
   border: 1px solid var(--bd);
   border-radius: var(--rl);
   box-shadow: var(--sh);
-  overflow: hidden;
+  overflow: visible;
+  min-width: 0;
 }
 
 html.teevolink-chrome aside#pages .tl-section-head {
@@ -270,7 +272,7 @@ html.teevolink-chrome aside#pages .pages {
 }
 
 html.teevolink-chrome aside#pages .pages button {
-  min-height: 40px;
+  min-height: 42px;
   padding: 8px 6px;
   background: var(--bg2);
   border: 1px solid var(--bd);
@@ -278,7 +280,9 @@ html.teevolink-chrome aside#pages .pages button {
   color: var(--tx2);
   font-size: 11px;
   font-weight: 600;
-  line-height: 1.25;
+  line-height: 1.3;
+  white-space: normal;
+  word-break: break-word;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s, color 0.15s;
 }
@@ -297,16 +301,24 @@ html.teevolink-chrome aside#pages .pages button.active {
 
 html.teevolink-chrome aside#pages fieldset#pageSwitches {
   margin: 0;
-  padding: 0;
-  border: none;
-  background: transparent;
+  padding: 8px 0 2px;
+  border: 1px solid var(--bd);
+  border-radius: var(--r);
+  background: var(--bg2);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: flex-start;
+  gap: 8px 14px;
+  min-width: 0;
 }
 
 html.teevolink-chrome aside#pages fieldset#pageSwitches legend {
   display: block;
+  flex: 0 0 100%;
   width: 100%;
-  margin-bottom: 6px;
-  padding: 0;
+  margin: 0 0 4px;
+  padding: 0 2px;
   font-size: 10px;
   font-weight: 600;
   color: var(--tx3);
@@ -314,24 +326,49 @@ html.teevolink-chrome aside#pages fieldset#pageSwitches legend {
   letter-spacing: 0.05em;
 }
 
-html.teevolink-chrome aside#pages fieldset label,
-html.teevolink-chrome aside#pages > label,
-html.teevolink-chrome aside#pages .tl-section-body > label {
+html.teevolink-chrome aside#pages fieldset#pageSwitches label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  margin: 0;
+  padding: 2px 0;
+  border: none;
+  flex: 0 1 auto;
+  min-width: 0;
+  white-space: normal;
+}
+
+html.teevolink-chrome aside#pages .tl-section-body > label,
+html.teevolink-chrome aside#pages details label {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  justify-content: flex-start;
+  gap: 10px;
   margin: 0;
   padding: 8px 0;
   border-bottom: 1px solid var(--bd);
   color: var(--tx2);
   font-size: 12px;
   font-weight: 500;
+  min-width: 0;
+  white-space: normal;
+  overflow: visible;
 }
 
-html.teevolink-chrome aside#pages fieldset label:last-child,
-html.teevolink-chrome aside#pages .tl-section-body > label:last-child {
+html.teevolink-chrome aside#pages .tl-section-body > label:last-child,
+html.teevolink-chrome aside#pages details label:last-child {
   border-bottom: none;
+}
+
+html.teevolink-chrome aside#pages label:has(#battery) {
+  justify-content: space-between;
+  gap: 12px;
+}
+
+html.teevolink-chrome aside#pages label:has(#battery) input[type="range"] {
+  flex: 1;
+  min-width: 80px;
 }
 
 html.teevolink-chrome aside#pages label input[type="checkbox"] {
@@ -350,9 +387,11 @@ html.teevolink-chrome aside#pages .row {
 }
 
 html.teevolink-chrome aside#pages .row button {
-  flex: 1;
-  min-width: calc(33% - 8px);
-  min-height: 36px;
+  flex: 1 1 100px;
+  min-width: 0;
+  min-height: 38px;
+  white-space: normal;
+  line-height: 1.25;
   padding: 8px 10px;
   background: var(--bg2);
   border: 1px solid var(--bd);
@@ -555,12 +594,12 @@ html.teevolink-chrome aside#pages #reset:hover {
 html.teevolink-chrome aside#pages .tl-scroll {
   flex: 1;
   min-height: 0;
-  overflow: auto;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding-right: 2px;
-  max-height: calc(100dvh - 48px);
+  max-height: none;
 }
 
 html.teevolink-chrome footer {
@@ -572,15 +611,40 @@ html.teevolink-chrome.embed footer {
   display: none !important;
 }
 
-html.teevolink-chrome.embed main {
-  padding: 12px 14px 14px;
-  min-height: calc(100dvh - 4px);
-  box-sizing: border-box;
+html.teevolink-chrome.embed {
   height: 100%;
 }
 
+html.teevolink-chrome.embed body {
+  height: auto;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+html.teevolink-chrome.embed main {
+  padding: 12px 14px 20px;
+  min-height: 0;
+  box-sizing: border-box;
+  height: auto;
+  align-items: start;
+}
+
+html.teevolink-chrome.embed section.preview {
+  position: sticky;
+  top: 0;
+  min-width: 0;
+}
+
+html.teevolink-chrome.embed section.preview #device {
+  width: 100%;
+  max-width: 570px;
+  margin: 0 auto;
+}
+
 html.teevolink-chrome.embed aside#pages .tl-scroll {
-  max-height: calc(100dvh - 24px);
+  max-height: none;
+  overflow: visible;
 }
 
 @media (max-width: 960px) {
