@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TeevoLink — XD10 + MD1T V2 (Draft)</title>
+  <style>
+    /* Teevolution Design System v2.0 — TeevoLink tokens */
+    :root {
+      --bg: #111111; --bg2: #1a1a1a; --bg3: #0d0d0d; --bg-inp: #1e1e1e;
+      --tx: #ededed; --tx2: #909090; --tx3: #555555;
+      --bd: #272727; --bd2: #363636;
+      --ac: #78BE1F; --acd: #96d038; --acl: #1d2e07; --ac-shadow: rgba(120,190,31,0.22);
+      --bl: #0c1e38; --blx: #85B7EB;
+      --aml: #261800; --amx: #FAC775;
+      --rdl: #260a0a; --rdx: #f87171;
+      --overlay: rgba(0,0,0,0.55);
+      --r: 6px; --rl: 8px;
+      --sh: 0 1px 3px rgba(0,0,0,.18), 0 1px 2px rgba(0,0,0,.12);
+      --shm: 0 4px 16px rgba(0,0,0,.28), 0 2px 4px rgba(0,0,0,.16);
+      --sidebar-w: 216px;
+      --topbar-h: 52px;
+    }
+    [data-theme="light"] {
+      --bg: #ffffff; --bg2: #f5f5f5; --bg3: #f0f0f0; --bg-inp: #ffffff;
+      --tx: #0a0a0a; --tx2: #555555; --tx3: #999999;
+      --bd: #e0e0e0; --bd2: #c8c8c8;
+      --acd: #5A9010; --acl: #EEF7DF;
+      --bl: #EBF2FB; --blx: #185FA5;
+      --aml: #FEF3E2; --amx: #854F0B;
+      --rdl: #FEF1F1; --rdx: #C42B2B;
+      --overlay: rgba(0,0,0,0.35);
+      --sh: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shm: 0 4px 16px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: var(--bg3); color: var(--tx);
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+    button, input, select, textarea { font-family: inherit; font-size: 13px; }
+    .app { display: flex; height: 100dvh; overflow: hidden; }
+    .sidebar { width: var(--sidebar-w); min-width: var(--sidebar-w); background: var(--bg);
+      border-right: 1px solid var(--bd); display: flex; flex-direction: column; flex-shrink: 0; }
+    .sidebar-logo { height: var(--topbar-h); padding: 0 16px; display: flex; align-items: center;
+      border-bottom: 1px solid var(--bd); font-weight: 700; font-size: 12px; letter-spacing: 0.04em; }
+    .sidebar-logo span { color: var(--ac); }
+    .device-card { margin: 10px; padding: 10px; background: var(--bg2); border: 1px solid var(--bd);
+      border-radius: var(--rl); font-size: 12px; }
+    .device-card .name { font-weight: 600; }
+    .device-card .meta { color: var(--tx3); font-size: 11px; margin-top: 2px; }
+    .nav { flex: 1; padding: 8px 6px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+    .nav-btn { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border: none;
+      border-radius: var(--r); background: transparent; color: var(--tx2); cursor: pointer;
+      font-weight: 500; text-align: left; width: 100%; transition: background .15s, color .15s; }
+    .nav-btn:hover { background: var(--bg2); color: var(--tx); }
+    .nav-btn.active { background: var(--acl); color: var(--acd); }
+    a.nav-btn { text-decoration: none; }
+    a.nav-btn::after { content: '↗'; margin-left: auto; font-size: 10px; opacity: 0.45; }
+    .nav-section { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--tx3); padding: 12px 10px 4px; }
+    .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+    .topbar { height: var(--topbar-h); display: flex; align-items: center; gap: 10px; padding: 0 20px;
+      background: var(--bg); border-bottom: 1px solid var(--bd); flex-shrink: 0; }
+    .topbar-title { flex: 1; font-weight: 600; font-size: 13px; }
+    .topbar-sub { color: var(--tx3); font-weight: 400; font-size: 12px; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 4px 10px;
+      border-radius: var(--r); border: 1px solid var(--bd); background: var(--bg2); }
+    .badge.ok { color: var(--ac); border-color: var(--ac); background: var(--acl); }
+    .badge.warn { color: var(--amx); border-color: var(--amx); background: var(--aml); }
+    .badge.err { color: var(--rdx); border-color: var(--rdx); background: var(--rdl); }
+    .profiles { display: flex; gap: 2px; background: var(--bg2); padding: 3px; border-radius: var(--rl);
+      border: 1px solid var(--bd); }
+    .profiles button { padding: 4px 12px; border: none; border-radius: 5px; font-size: 11px;
+      font-weight: 600; cursor: pointer; background: transparent; color: var(--tx3); }
+    .profiles button.active { background: var(--bg); color: var(--tx); box-shadow: var(--sh); }
+    .icon-btn { width: 30px; height: 30px; border: 1px solid var(--bd); border-radius: var(--r);
+      background: var(--bg2); color: var(--tx2); cursor: pointer; display: flex; align-items: center;
+      justify-content: center; }
+    .content { flex: 1; overflow: auto; padding: 14px; }
+    .page { display: none; }
+    .page.active { display: block; }
+    .banner { padding: 10px 14px; border-radius: var(--rl); margin-bottom: 12px; font-size: 13px;
+      border: 1px solid var(--bd); }
+    .banner.info { background: var(--bl); color: var(--blx); border-color: var(--blx); }
+    .banner.warn { background: var(--aml); color: var(--amx); border-color: var(--amx); }
+    .banner.err { background: var(--rdl); color: var(--rdx); border-color: var(--rdx); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    @media (max-width: 900px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+    .card { background: var(--bg); border: 1px solid var(--bd); border-radius: var(--rl);
+      padding: 14px; margin-bottom: 10px; }
+    .card h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--tx2); margin: 0 0 12px; display: flex; justify-content: space-between; align-items: center; }
+    .card h3 .hint { font-size: 11px; font-weight: 500; color: var(--tx3); text-transform: none; }
+    .field { margin-bottom: 12px; }
+    .field label { display: block; font-size: 12px; color: var(--tx2); margin-bottom: 6px; }
+    .field input[type="text"], .field input[type="number"], .field select, .field textarea {
+      width: 100%; padding: 8px 10px; border: 1px solid var(--bd); border-radius: var(--r);
+      background: var(--bg-inp); color: var(--tx); }
+    .field textarea { min-height: 80px; resize: vertical; }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0;
+      border-bottom: 1px solid var(--bd); }
+    .row:last-child { border-bottom: none; }
+    .switch { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .switch span { position: absolute; inset: 0; background: var(--bd2); border-radius: 20px; cursor: pointer; transition: .2s; }
+    .switch span::before { content: ''; position: absolute; width: 14px; height: 14px; left: 3px; top: 3px;
+      background: var(--tx); border-radius: 50%; transition: .2s; }
+    .switch input:checked + span { background: var(--ac); }
+    .switch input:checked + span::before { transform: translateX(16px); }
+    .btn { padding: 8px 16px; border-radius: var(--r); border: 1px solid var(--bd); background: var(--bg2);
+      color: var(--tx); cursor: pointer; font-weight: 600; font-size: 13px; transition: .15s; }
+    .btn:hover { border-color: var(--bd2); }
+    .btn.primary { background: var(--ac); border-color: var(--ac); color: #0a0a0a; }
+    .btn.primary:hover { filter: brightness(1.08); }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .dpi-stage { flex: 1; height: 88px; display: flex; flex-direction: column; justify-content: space-between;
+      padding: 10px 12px; border-radius: var(--r); border: 1px solid var(--bd); background: var(--bg2);
+      cursor: pointer; position: relative; }
+    .dpi-stage.active { border-width: 1.5px; }
+    .dpi-val { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.05em; }
+    .pill.v1 { background: var(--acl); color: var(--acd); }
+    .pill.v2 { background: var(--aml); color: var(--amx); }
+    .screen-preview { background: #000; border-radius: var(--rl); border: 2px solid var(--bd2);
+      aspect-ratio: 16/10; max-width: 320px; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; color: #78BE1F; font-family: monospace; position: relative; overflow: hidden; }
+    .screen-preview .label { position: absolute; top: 8px; left: 10px; font-size: 10px; color: #666; }
+    .tile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .tile { padding: 12px; border: 1px solid var(--bd); border-radius: var(--r); background: var(--bg2);
+      text-align: center; font-size: 11px; min-height: 64px; display: flex; align-items: center;
+      justify-content: center; }
+    .tile select { width: 100%; font-size: 11px; padding: 4px; }
+    .toast { position: fixed; bottom: 20px; right: 20px; padding: 10px 16px; background: var(--bg);
+      border: 1px solid var(--ac); border-radius: var(--rl); box-shadow: var(--shm); font-size: 13px;
+      color: var(--acd); z-index: 9999; opacity: 0; transform: translateY(8px); transition: .25s; pointer-events: none; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .connect-wrap { height: 100%; display: flex; min-height: calc(100dvh - var(--topbar-h)); }
+    .connect-left { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 32px; background: var(--bg); border-right: 1px solid var(--bd); gap: 20px; }
+    .connect-right { flex: 1; padding: 40px 32px; display: flex; flex-direction: column; justify-content: center; gap: 16px; }
+    .product-visual { width: 200px; height: 120px; border: 1px dashed var(--bd); border-radius: var(--rl);
+      display: flex; align-items: center; justify-content: center; color: var(--tx3); font-size: 12px;
+      background: radial-gradient(ellipse at center bottom, rgba(120,190,31,0.1), transparent 70%); }
+    .feature-list { list-style: none; padding: 0; margin: 0; }
+    .feature-list li { padding: 8px 0; border-bottom: 1px solid var(--bd); font-size: 13px; color: var(--tx2); }
+    .feature-list strong { color: var(--tx); display: block; font-size: 13px; }
+    .draft-tag { font-size: 10px; padding: 2px 6px; background: var(--aml); color: var(--amx);
+      border-radius: 4px; font-weight: 700; margin-left: 8px; vertical-align: middle; }
+    .grayed { opacity: 0.4; pointer-events: none; }
+    .ota-card { border: 1px solid var(--bd); border-radius: var(--rl); padding: 16px; background: var(--bg2); }
+    .progress { height: 6px; background: var(--bd); border-radius: 3px; margin-top: 10px; overflow: hidden; }
+    .progress > div { height: 100%; background: var(--ac); width: 0%; transition: width .3s; }
+    .hidden { display: none !important; }
+    .lang-picker { position: relative; }
+    .lang-trigger {
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 10px; border-radius: var(--r);
+      border: 1px solid var(--bd); background: var(--bg2);
+      color: var(--tx2); cursor: pointer; font-size: 12px; font-weight: 600;
+      transition: border-color .15s, color .15s;
+    }
+    .lang-trigger:hover { border-color: var(--ac); color: var(--tx); }
+    .lang-trigger .flag { font-size: 15px; line-height: 1; }
+    .lang-trigger .chev { opacity: 0.6; font-size: 10px; }
+    .lang-menu {
+      position: absolute; top: calc(100% + 6px); right: 0;
+      min-width: 168px; background: var(--bg); border: 1px solid var(--bd);
+      border-radius: var(--rl); box-shadow: var(--shm); z-index: 1000;
+      overflow: hidden; opacity: 0; visibility: hidden; transform: translateY(-4px);
+      transition: opacity .12s, transform .12s, visibility .12s;
+    }
+    .lang-menu.open { opacity: 1; visibility: visible; transform: translateY(0); }
+    .lang-option {
+      display: flex; align-items: center; gap: 10px; width: 100%;
+      padding: 9px 12px; border: none; background: transparent;
+      color: var(--tx); cursor: pointer; font-size: 13px; text-align: left;
+      font-family: inherit; transition: background .1s;
+    }
+    .lang-option:hover { background: var(--bg2); }
+    .lang-option.active { background: var(--acl); color: var(--acd); font-weight: 600; }
+    .lang-option .check { margin-left: auto; color: var(--ac); font-size: 12px; }
+    .lang-backdrop {
+      position: fixed; inset: 0; z-index: 999; background: transparent;
+    }
+    .connect-lang { position: absolute; top: 16px; right: 16px; }
+    #connect-screen { position: relative; }
+  </style>
+</head>
+<body>
+  <div id="toast" class="toast"></div>
+
+  <!-- Connect flow (full screen before app) -->
+  <div id="connect-screen" class="connect-wrap">
+    <div class="lang-picker connect-lang" id="lang-picker-connect"></div>
+    <div class="connect-left">
+      <div class="product-visual" data-i18n="connect.visual">XD10 + MD1T V2</div>
+      <div style="text-align:center">
+        <div style="font-size:20px;font-weight:800">TeevoLink</div>
+        <div style="color:var(--tx3);font-size:13px" data-i18n="connect.subtitle">Web driver · XD10 + MD1T V2</div>
+      </div>
+    </div>
+    <div class="connect-right">
+      <h1 style="font-size:22px;font-weight:800;margin:0" data-i18n="connect.title">Connect your devices</h1>
+      <p style="color:var(--tx2);margin:0;font-size:13px" data-i18n="connect.desc">Configuration works on 2.4G wireless and USB-C wired. Bluetooth is mouse-only — no web config.</p>
+      <div class="grid-2" style="gap:12px">
+        <button class="btn primary" id="btn-connect-24g" data-i18n="connect.btn24g">Connect — 2.4G</button>
+        <button class="btn" id="btn-connect-wired" data-i18n="connect.btnWired">Connect — USB-C Wired</button>
+      </div>
+      <button class="btn" id="btn-connect-bt" style="width:100%" data-i18n="connect.btnBt">Simulate Bluetooth (read-only)</button>
+      <p style="font-size:11px;color:var(--tx3)" data-i18n="connect.draftNote">Draft prototype — no WebHID. Buttons simulate connection for UI review.</p>
+    </div>
+  </div>
+
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <div class="sidebar-logo">TEE<span>VO</span>LINK <span class="draft-tag">DRAFT</span></div>
+      <div class="device-card">
+        <div class="name" id="device-name">XD10 + MD1T V2</div>
+        <div class="meta" id="device-meta">—</div>
+      </div>
+      <nav class="nav">
+        <div class="nav-section" data-i18n="nav.mouse">Mouse</div>
+        <button class="nav-btn active" data-page="overview" data-i18n="nav.overview">Overview</button>
+        <button class="nav-btn" data-page="dpi" data-i18n="nav.dpi">DPI</button>
+        <button class="nav-btn" data-page="lighting" data-i18n="nav.lighting">Lighting</button>
+        <button class="nav-btn" data-page="buttons" data-i18n="nav.buttons">Buttons</button>
+        <button class="nav-btn" data-page="macros" data-i18n="nav.macros">Macros</button>
+        <button class="nav-btn" data-page="profiles" data-i18n="nav.profiles">Profiles</button>
+        <button class="nav-btn" data-page="advanced" data-i18n="nav.advanced">Advanced</button>
+        <div class="nav-section" data-i18n="nav.receiver">Receiver</div>
+        <button class="nav-btn" data-page="receiver" data-i18n="nav.receiverScreen">Screen (DISP)</button>
+        <button class="nav-btn" data-page="fnui" data-i18n="nav.fnui">FN UI Config</button>
+        <button class="nav-btn" data-page="firmware" data-i18n="nav.firmware">Firmware</button>
+        <div class="nav-section" data-i18n="nav.resources">Resources</div>
+        <a class="nav-btn" href="/xd10/ui-features.html" data-i18n="nav.uiGuide">XD10 UI guide (Final)</a>
+        <a class="nav-btn" href="/xd10/" data-i18n="nav.xd10Hub">All XD10 docs</a>
+        <a class="nav-btn" href="/md1t-screen-demo/03_UI%E6%BC%94%E7%A4%BADEMO/index.html" data-i18n="nav.screenDemo">Screen demo</a>
+      </nav>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-title">
+          XD10 / MD1T V2
+          <span class="topbar-sub" data-i18n="topbar.product">Tri-mode 8K mouse + screen receiver</span>
+        </div>
+        <div class="badge" id="conn-badge">—</div>
+        <div class="profiles" id="profile-tabs">
+          <button type="button" class="active" data-p="0">P1</button>
+          <button type="button" data-p="1">P2</button>
+          <button type="button" data-p="2">P3</button>
+          <button type="button" data-p="3">P4</button>
+        </div>
+        <div class="lang-picker" id="lang-picker-app"></div>
+        <button class="icon-btn" id="theme-toggle" title="Theme">☀</button>
+      </header>
+
+      <div id="conn-banner" class="content" style="padding-bottom:0"></div>
+
+      <div class="content" id="pages-wrap">
+        <!-- Overview -->
+        <section class="page active" id="page-overview">
+          <div class="grid-2">
+            <div class="card">
+              <h3 data-i18n="overview.status">Device status</h3>
+              <div class="row"><span data-i18n="overview.link">Link mode</span><strong id="ov-link">2.4G</strong></div>
+              <div class="row"><span data-i18n="overview.polling">Polling rate</span><strong>8000 Hz</strong></div>
+              <div class="row"><span data-i18n="overview.dpi">Active DPI</span><strong>1600</strong></div>
+              <div class="row"><span data-i18n="overview.battery">Battery</span><strong>78%</strong></div>
+              <div class="row"><span data-i18n="overview.mouseFw">Mouse firmware</span><strong>v0.9.0-draft</strong></div>
+              <div class="row"><span data-i18n="overview.recvFw">Receiver firmware</span><strong>v0.9.0-draft</strong></div>
+            </div>
+            <div class="card">
+              <h3 data-i18n="overview.quick">Quick actions</h3>
+              <p style="color:var(--tx2);font-size:12px;margin:0 0 12px" data-i18n="overview.quickDesc">Side button single-click opens this page (fixed in firmware).</p>
+              <div style="display:flex;flex-wrap:wrap;gap:8px">
+                <button class="btn" onclick="goPage('receiver')" data-i18n="overview.gotoScreen">Receiver screen</button>
+                <button class="btn" onclick="goPage('fnui')" data-i18n="overview.gotoFn">FN UI config</button>
+                <button class="btn" onclick="goPage('firmware')" data-i18n="overview.gotoOta">Firmware OTA</button>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <h3 data-i18n="overview.v1v2">V1 vs V2 scope <span class="hint" data-i18n="overview.v1v2Hint">from PRD</span></h3>
+            <div class="grid-2">
+              <div>
+                <span class="pill v1">V1 Launch</span>
+                <ul style="margin:8px 0 0;padding-left:18px;color:var(--tx2);font-size:12px">
+                  <li data-i18n="overview.v1a">FN UI, timer, DISP P1–P5, album, barrage</li>
+                  <li data-i18n="overview.v1b">Full remapping (32 actions), FN grids (23)</li>
+                  <li data-i18n="overview.v1c">Mouse + receiver OTA</li>
+                </ul>
+              </div>
+              <div>
+                <span class="pill v2">V2 OTA ≤30d</span>
+                <ul style="margin:8px 0 0;padding-left:18px;color:var(--tx2);font-size:12px">
+                  <li data-i18n="overview.v2a">FN UI theme colors</li>
+                  <li data-i18n="overview.v2b">Clock / timer digit colors</li>
+                  <li data-i18n="overview.v2c">Weather on P1, low-battery alert</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- DPI -->
+        <section class="page" id="page-dpi">
+          <div class="card">
+            <h3 data-i18n="dpi.stages">DPI stages <span class="hint" data-i18n="dpi.stagesHint">5 / 5 onboard</span></h3>
+            <div style="display:flex;gap:6px" id="dpi-stages"></div>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <h3 data-i18n="dpi.editor">Stage editor</h3>
+              <div class="field"><label data-i18n="dpi.x">X DPI</label><input type="number" value="1600" min="400" max="6400" /></div>
+              <div class="field"><label data-i18n="dpi.y">Y DPI</label><input type="number" value="1600" min="400" max="6400" /></div>
+              <div class="field"><label data-i18n="dpi.curve">Dynamic DPI curve</label>
+                <select id="sel-dpi-curve">
+                  <option value="linear" data-i18n="opt.linear">Linear</option>
+                  <option value="custom" data-i18n="opt.custom">Custom</option>
+                </select></div>
+            </div>
+            <div class="card">
+              <h3 data-i18n="dpi.performance">Performance</h3>
+              <div class="field"><label data-i18n="dpi.hz">Polling rate</label>
+                <select id="sel-polling">
+                  <option>1000 Hz</option><option>2000 Hz</option><option>4000 Hz</option><option selected>8000 Hz</option>
+                </select></div>
+              <div class="field"><label data-i18n="dpi.lod">LOD</label>
+                <select id="sel-lod">
+                  <option value="low" data-i18n="opt.lodLow">Low</option>
+                  <option value="med" data-i18n="opt.lodMed" selected>Medium</option>
+                  <option value="high" data-i18n="opt.lodHigh">High</option>
+                </select></div>
+              <div class="field"><label data-i18n="dpi.motion">Motion Sync</label>
+                <label class="switch"><input type="checkbox" checked onchange="autosave()"><span></span></label></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Lighting -->
+        <section class="page" id="page-lighting">
+          <div class="card">
+            <h3 data-i18n="light.title">DPI indicator LED</h3>
+            <p style="font-size:12px;color:var(--tx2);margin:0 0 12px" data-i18n="light.desc">Color per DPI level, 3s on change. Charging: white; full: green; low: red flash.</p>
+            <div class="grid-4" id="led-colors"></div>
+          </div>
+        </section>
+
+        <!-- Buttons -->
+        <section class="page" id="page-buttons">
+          <div class="card">
+            <h3 data-i18n="btn.remap">Button remapping <span class="hint" data-i18n="btn.tableA">Table A — 32 items</span></h3>
+            <div class="grid-2">
+              <div class="field"><label data-i18n="btn.left">Left click</label><select class="remap-select"></select></div>
+              <div class="field"><label data-i18n="btn.right">Right click</label><select class="remap-select"></select></div>
+              <div class="field"><label data-i18n="btn.middle">Middle click</label><select class="remap-select"></select></div>
+              <div class="field"><label data-i18n="btn.side1">Side button 1</label><select class="remap-select"></select></div>
+              <div class="field"><label data-i18n="btn.side2">Side button 2</label><select class="remap-select"></select></div>
+              <div class="field"><label data-i18n="btn.dpi">DPI button</label><select class="remap-select"></select></div>
+              <div class="field"><label data-i18n="btn.fn">FN button</label><select class="remap-select" disabled><option data-i18n="btn.fnFixed">FN (fixed — UI / timer / DISP)</option></select></div>
+              <div class="field"><label data-i18n="btn.scroll">Scroll up / down</label><select class="remap-select"></select></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3 data-i18n="btn.receiverFixed">Receiver side button (fixed)</h3>
+            <div class="row"><span data-i18n="btn.recvClick">Single click</span><strong data-i18n="btn.openTeevoLink">Open TeevoLink (not configurable)</strong></div>
+            <div class="row"><span data-i18n="btn.recvDbl">Double click</span><strong data-i18n="btn.dispFlip">DISP page flip (not configurable)</strong></div>
+          </div>
+        </section>
+
+        <!-- Macros -->
+        <section class="page" id="page-macros">
+          <div class="card">
+            <h3 data-i18n="macro.title">Macro editor</h3>
+            <p style="font-size:12px;color:var(--tx2)" data-i18n="macro.desc">Assign macro sequences to remappable keys. Pairing disables FN-related features on device.</p>
+            <div class="field"><label data-i18n="macro.name">Macro name</label><input type="text" data-i18n-placeholder="macro.namePh" placeholder="e.g. Buy bind" /></div>
+            <div class="field"><label data-i18n="macro.steps">Steps</label>
+              <textarea data-i18n-placeholder="macro.stepsPh" placeholder="Key down → delay → key up…"></textarea></div>
+            <button class="btn primary" data-i18n="macro.save">Save macro</button>
+          </div>
+        </section>
+
+        <!-- Profiles -->
+        <section class="page" id="page-profiles">
+          <div class="card">
+            <h3 data-i18n="prof.title">Onboard profiles (4)</h3>
+            <p style="font-size:12px;color:var(--tx2)" data-i18n="prof.desc">Mouse settings only — does not include receiver screen content.</p>
+            <div class="grid-4">
+              <div class="tile"><strong>P1</strong><br><span style="color:var(--tx3);font-size:11px" data-i18n="prof.esports">Esports</span></div>
+              <div class="tile"><strong>P2</strong><br><span style="color:var(--tx3);font-size:11px" data-i18n="prof.fps">FPS</span></div>
+              <div class="tile"><strong>P3</strong><br><span style="color:var(--tx3);font-size:11px" data-i18n="prof.moba">MOBA</span></div>
+              <div class="tile"><strong>P4</strong><br><span style="color:var(--tx3);font-size:11px" data-i18n="prof.office">Office</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Advanced -->
+        <section class="page" id="page-advanced">
+          <div class="grid-2">
+            <div class="card">
+              <h3 data-i18n="adv.sensor">Sensor</h3>
+              <div class="row"><span data-i18n="adv.debounceL">Left debounce (ms)</span><input type="number" value="0" min="0" max="20" style="width:64px" /></div>
+              <div class="row"><span data-i18n="adv.debounceR">Right debounce (ms)</span><input type="number" value="0" min="0" max="20" style="width:64px" /></div>
+              <div class="row"><span data-i18n="adv.angle">Angle correction</span><input type="number" value="0" min="0" max="30" style="width:64px" />°</div>
+              <div class="row"><span data-i18n="adv.glass">Glass tracking</span><label class="switch"><input type="checkbox"><span></span></label></div>
+              <div class="row"><span data-i18n="adv.frames">Sensor frame rate</span><span style="color:var(--tx3);font-size:12px" data-i18n="adv.framesNote">Display only — OTA firmware</span></div>
+            </div>
+            <div class="card">
+              <h3 data-i18n="adv.rf">RF & power</h3>
+              <div class="field"><label data-i18n="adv.rfMode">RF mode</label>
+                <select id="sel-rf">
+                  <option data-i18n="opt.rfNormal">Normal</option>
+                  <option data-i18n="opt.rfEnhanced">Enhanced range</option>
+                  <option data-i18n="opt.rfHop">Frequency hopping</option>
+                  <option data-i18n="opt.rfBoth">Enhanced + hopping</option>
+                </select></div>
+              <div class="field"><label data-i18n="adv.power">Power mode</label>
+                <select id="sel-power">
+                  <option data-i18n="opt.powOffice">Office</option>
+                  <option data-i18n="opt.powNormal">Normal</option>
+                  <option data-i18n="opt.powComp" selected>Competitive</option>
+                  <option data-i18n="opt.powFull">Full load</option>
+                </select></div>
+              <div class="field"><label data-i18n="adv.deepSleep">Deep sleep</label><input type="text" id="inp-deep-sleep" value="5 min" /></div>
+              <div class="row"><span data-i18n="adv.neverLight">Never light sleep</span><label class="switch"><input type="checkbox"><span></span></label></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Receiver DISP -->
+        <section class="page" id="page-receiver">
+          <div class="grid-2">
+            <div class="card">
+              <h3 data-i18n="recv.preview">Screen preview</h3>
+              <div class="screen-preview" id="screen-preview">
+                <span class="label" id="preview-label">DISP P1</span>
+                <div id="preview-content" style="font-size:18px">12:45:30</div>
+              </div>
+              <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
+                <button class="btn" onclick="setDispPage(1)">P1</button>
+                <button class="btn" onclick="setDispPage(2)">P2</button>
+                <button class="btn" onclick="setDispPage(3)">P3</button>
+                <button class="btn" onclick="setDispPage(4)">P4</button>
+                <button class="btn" onclick="setDispPage(5)">P5</button>
+              </div>
+            </div>
+            <div class="card" id="recv-editor">
+              <h3 data-i18n="recv.p1">P1 — Clock</h3>
+              <div class="field"><label data-i18n="recv.clockStyle">Clock style</label>
+                <select id="sel-clock-style">
+                  <option data-i18n="opt.style1">Style 1</option>
+                  <option data-i18n="opt.style2">Style 2</option>
+                  <option data-i18n="opt.style3">Style 3</option>
+                </select></div>
+              <div class="row"><span data-i18n="recv.syncPc">Sync from PC time</span><label class="switch"><input type="checkbox" checked><span></span></label></div>
+              <div class="field v2-only grayed"><label data-i18n="recv.weather">Weather (V2)</label><select disabled><option>—</option></select></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3 data-i18n="recv.p2">P2 — Host dashboard</h3>
+            <p style="font-size:12px;color:var(--tx2)" data-i18n="recv.p2Desc">Resolution, refresh rate, volume, display #, ping, I/O device names, CPU/GPU. Requires PC bridge — open question in PRD.</p>
+            <div class="grid-3">
+              <div class="tile">2560×1440</div>
+              <div class="tile">165 Hz</div>
+              <div class="tile">Ping 12ms</div>
+            </div>
+          </div>
+          <div class="card">
+            <h3 data-i18n="recv.p4album">P4 — Album</h3>
+            <div class="grid-4">
+              <div class="tile"><label data-i18n="recv.slot1">Slot 1</label><input type="file" accept=".png,.gif" style="font-size:10px;margin-top:8px" /></div>
+              <div class="tile"><label data-i18n="recv.slot2">Slot 2</label><input type="file" accept=".png,.gif" style="font-size:10px;margin-top:8px" /></div>
+              <div class="tile"><label data-i18n="recv.slot3">Slot 3</label><input type="file" accept=".png,.gif" style="font-size:10px;margin-top:8px" /></div>
+              <div class="tile"><label data-i18n="recv.slot4">Slot 4</label><input type="file" accept=".png,.gif" style="font-size:10px;margin-top:8px" /></div>
+            </div>
+            <div class="field" style="margin-top:12px"><label data-i18n="recv.carousel">Carousel interval</label>
+              <select id="sel-carousel">
+                <option>1s</option><option>5s</option><option selected>10s</option><option>30s</option>
+                <option data-i18n="opt.carousel1m">1 min</option>
+              </select></div>
+          </div>
+          <div class="card">
+            <h3 data-i18n="recv.p5">P5 — Barrage / scrolling text</h3>
+            <div class="field"><label data-i18n="recv.barrage">Message</label>
+              <textarea data-i18n-placeholder="recv.barragePh" placeholder="Your custom scrolling text…"></textarea></div>
+          </div>
+        </section>
+
+        <!-- FN UI -->
+        <section class="page" id="page-fnui">
+          <div class="card">
+            <h3 data-i18n="fn.switches">Master switches</h3>
+            <div class="row"><span data-i18n="fn.uiMaster">FN UI master switch</span><label class="switch"><input type="checkbox" checked><span></span></label></div>
+            <div class="row"><span data-i18n="fn.timerMaster">FN timer master switch</span><label class="switch"><input type="checkbox" checked><span></span></label></div>
+            <div class="field"><label data-i18n="fn.timerType">Timer type</label>
+              <select id="sel-timer-type">
+                <option value="down" data-i18n="fn.countdown">Countdown</option>
+                <option value="up" data-i18n="fn.countup">Count up</option>
+              </select></div>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <h3 data-i18n="fn.p4">UI-P4 multimedia grid <span class="hint" data-i18n="fn.tableB">Table B — 23 items</span></h3>
+              <div class="tile-grid" id="grid-p4"></div>
+            </div>
+            <div class="card">
+              <h3 data-i18n="fn.p5">UI-P5 multimedia grid</h3>
+              <div class="tile-grid" id="grid-p5"></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3 data-i18n="fn.p6">UI-P6 — Brightness / album / timer / clock</h3>
+            <div class="grid-2">
+              <div class="field"><label data-i18n="fn.brightness">Screen brightness</label><input type="range" min="1" max="100" value="70" /></div>
+              <div class="field"><label data-i18n="fn.albumSlot">Active album slot</label>
+                <select><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+              <div class="field"><label data-i18n="fn.timerPreset">Active timer preset</label>
+                <select id="sel-timer-preset">
+                  <option data-i18n="opt.tmr5">5 min</option>
+                  <option data-i18n="opt.tmr10">10 min</option>
+                  <option data-i18n="opt.tmr15">15 min</option>
+                  <option data-i18n="opt.tmr30">30 min</option>
+                </select></div>
+              <div class="field"><label data-i18n="fn.clockStyle">Clock style</label>
+                <select id="sel-fn-clock-style">
+                  <option data-i18n="opt.style1">Style 1</option>
+                  <option data-i18n="opt.style2">Style 2</option>
+                  <option data-i18n="opt.style3">Style 3</option>
+                </select></div>
+              <div class="field v2-only grayed"><label data-i18n="fn.clockColor">Clock digit color (V2)</label><input type="color" disabled value="#78BE1F" /></div>
+              <div class="field v2-only grayed"><label data-i18n="fn.timerColor">Timer digit color (V2)</label><input type="color" disabled value="#78BE1F" /></div>
+            </div>
+            <p style="font-size:11px;color:var(--tx3)" data-i18n="fn.note">FN long press ≥3s enters UI on device. P4/P5 are the only user-configurable FN UI layouts.</p>
+          </div>
+        </section>
+
+        <!-- Firmware -->
+        <section class="page" id="page-firmware">
+          <div class="grid-2">
+            <div class="ota-card">
+              <h3 style="margin:0 0 8px;font-size:14px" data-i18n="ota.mouse">XD10 Mouse firmware</h3>
+              <div style="color:var(--tx2);font-size:12px">Current: v0.9.0-draft → Target: v1.0.0</div>
+              <button class="btn primary" style="margin-top:12px" id="ota-mouse" data-i18n="ota.update">Update firmware</button>
+              <div class="progress"><div id="ota-mouse-bar"></div></div>
+            </div>
+            <div class="ota-card">
+              <h3 style="margin:0 0 8px;font-size:14px" data-i18n="ota.receiver">MD1T V2 Receiver firmware</h3>
+              <div style="color:var(--tx2);font-size:12px">Current: v0.9.0-draft → Target: v1.0.0</div>
+              <button class="btn primary" style="margin-top:12px" id="ota-recv" data-i18n="ota.update">Update firmware</button>
+              <div class="progress"><div id="ota-recv-bar"></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3 data-i18n="ota.v2">V2 OTA wave (≤30 days post-launch)</h3>
+            <ul style="color:var(--tx2);font-size:12px;padding-left:18px">
+              <li data-i18n="ota.v2a">SCR-15 FN UI theme colors</li>
+              <li data-i18n="ota.v2b">SCR-CLK-COL / SCR-TMR-COL digit colors</li>
+              <li data-i18n="ota.v2c">SCR-17 weather, SCR-18 low-battery alert</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const I18N = {
+      en: {
+        connect: { visual: 'XD10 + MD1T V2', subtitle: 'Web driver · XD10 + MD1T V2', title: 'Connect your devices',
+          desc: 'Configuration works on 2.4G wireless and USB-C wired. Bluetooth is mouse-only — no web config.',
+          btn24g: 'Connect — 2.4G', btnWired: 'Connect — USB-C Wired', btnBt: 'Simulate Bluetooth (read-only)',
+          draftNote: 'Draft prototype — no WebHID. Buttons simulate connection for UI review.' },
+        lang: { label: 'Language', en: 'English', zh: '中文' },
+        nav: { mouse: 'Mouse', overview: 'Overview', dpi: 'DPI', lighting: 'Lighting', buttons: 'Buttons', macros: 'Macros',
+          profiles: 'Profiles', advanced: 'Advanced', receiver: 'Receiver', receiverScreen: 'Screen (DISP)', fnui: 'FN UI Config', firmware: 'Firmware',
+          resources: 'Resources', uiGuide: 'XD10 UI guide (Final)', xd10Hub: 'All XD10 docs', screenDemo: 'Screen demo' },
+        topbar: { product: 'Tri-mode 8K mouse + screen receiver' },
+        banner: { bt: 'Bluetooth mode: TeevoLink configuration is not available. Basic mouse only. Side button still opens this page.',
+          ok24g: 'Connected via 2.4G — full configuration available.', okWired: 'Connected via USB-C wired — full configuration available.' },
+        overview: { status: 'Device status', link: 'Link mode', polling: 'Polling rate', dpi: 'Active DPI', battery: 'Battery',
+          mouseFw: 'Mouse firmware', recvFw: 'Receiver firmware', quick: 'Quick actions', quickDesc: 'Side button single-click opens this page (fixed in firmware).',
+          gotoScreen: 'Receiver screen', gotoFn: 'FN UI config', gotoOta: 'Firmware OTA',
+          v1v2: 'V1 vs V2 scope', v1v2Hint: 'from PRD',
+          v1a: 'FN UI, timer, DISP P1–P5, album, barrage', v1b: 'Full remapping (32 actions), FN grids (23)', v1c: 'Mouse + receiver OTA',
+          v2a: 'FN UI theme colors', v2b: 'Clock / timer digit colors', v2c: 'Weather on P1, low-battery alert' },
+        dpi: { stages: 'DPI stages', stagesHint: '5 / 5 onboard', editor: 'Stage editor', x: 'X DPI', y: 'Y DPI', curve: 'Dynamic DPI curve',
+          performance: 'Performance', hz: 'Polling rate', lod: 'LOD', motion: 'Motion Sync' },
+        light: { title: 'DPI indicator LED', desc: 'Color per DPI level, 3s on change. Charging: white; full: green; low: red flash.' },
+        btn: { remap: 'Button remapping', tableA: 'Table A — 32 items', left: 'Left click', right: 'Right click', middle: 'Middle click',
+          side1: 'Side button 1', side2: 'Side button 2', dpi: 'DPI button', fn: 'FN button', fnFixed: 'FN (fixed — UI / timer / DISP)', scroll: 'Scroll up / down',
+          receiverFixed: 'Receiver side button (fixed)', recvClick: 'Single click', openTeevoLink: 'Open TeevoLink (not configurable)',
+          recvDbl: 'Double click', dispFlip: 'DISP page flip (not configurable)', remapOnly: 'remap only',
+          default: 'Default', macro1: 'Macro 1' },
+        macro: { title: 'Macro editor', desc: 'Assign macro sequences to remappable keys.', name: 'Macro name',
+          namePh: 'e.g. Buy bind', steps: 'Steps', stepsPh: 'Key down → delay → key up…', save: 'Save macro' },
+        prof: { title: 'Onboard profiles (4)', desc: 'Mouse settings only — not receiver screen.', esports: 'Esports', fps: 'FPS', moba: 'MOBA', office: 'Office' },
+        adv: { sensor: 'Sensor', debounceL: 'Left debounce (ms)', debounceR: 'Right debounce (ms)', angle: 'Angle correction',
+          glass: 'Glass tracking', frames: 'Sensor frame rate', framesNote: 'Display only — OTA firmware',
+          rf: 'RF & power', rfMode: 'RF mode', power: 'Power mode', deepSleep: 'Deep sleep', neverLight: 'Never light sleep' },
+        recv: { preview: 'Screen preview', p1: 'P1 — Clock', clockStyle: 'Clock style', syncPc: 'Sync from PC time', weather: 'Weather (V2)',
+          p2: 'P2 — Host dashboard', p2Desc: 'Requires PC bridge — open question in PRD.',
+          p4album: 'P4 — Album', slot: 'Slot', slot1: 'Slot 1', slot2: 'Slot 2', slot3: 'Slot 3', slot4: 'Slot 4',
+          carousel: 'Carousel interval', p5: 'P5 — Barrage', barrage: 'Message', barragePh: 'Your custom scrolling text…',
+          dispP1: 'DISP P1 — Clock', dispP2: 'DISP P2 — Host', dispP3: 'DISP P3 — Mouse', dispP4: 'DISP P4 — Album', dispP5: 'DISP P5 — Barrage',
+          previewClock: '12:45:30', previewHost: '2560×1440 · 165Hz', previewMouse: 'DPI 1600 · 8K', previewAlbum: '🖼 Album', previewBarrage: '« barrage »' },
+        fn: { switches: 'Master switches', uiMaster: 'FN UI master switch', timerMaster: 'FN timer master switch', timerType: 'Timer type',
+          countdown: 'Countdown', countup: 'Count up', p4: 'UI-P4 multimedia grid', p5: 'UI-P5 multimedia grid', tableB: 'Table B — 23 items',
+          p6: 'UI-P6 — Brightness / album / timer / clock', brightness: 'Screen brightness', albumSlot: 'Active album slot',
+          timerPreset: 'Active timer preset', clockStyle: 'Clock style', clockColor: 'Clock digit color (V2)', timerColor: 'Timer digit color (V2)',
+          note: 'FN long press ≥3s enters UI on device. P4/P5 are the only user-configurable FN UI layouts.' },
+        ota: { mouse: 'XD10 Mouse firmware', receiver: 'MD1T V2 Receiver firmware', update: 'Update firmware',
+          v2: 'V2 OTA wave (≤30 days post-launch)', v2a: 'SCR-15 FN UI theme colors', v2b: 'SCR-CLK-COL / SCR-TMR-COL digit colors',
+          v2c: 'SCR-17 weather, SCR-18 low-battery alert', done: 'Firmware update complete (simulated)' },
+        opt: { linear: 'Linear', custom: 'Custom', lodLow: 'Low', lodMed: 'Medium', lodHigh: 'High',
+          rfNormal: 'Normal', rfEnhanced: 'Enhanced range', rfHop: 'Frequency hopping', rfBoth: 'Enhanced + hopping',
+          powOffice: 'Office', powNormal: 'Normal', powComp: 'Competitive', powFull: 'Full load',
+          style1: 'Style 1', style2: 'Style 2', style3: 'Style 3', carousel1m: '1 min',
+          tmr5: '5 min', tmr10: '10 min', tmr15: '15 min', tmr30: '30 min', deepSleepVal: '5 min' },
+        conn: { meta24g: '2.4G wireless · Connected', metaWired: 'USB-C wired · Connected', metaBt: 'Bluetooth · Read-only' },
+        autosave: 'Saved to device',
+        mm: ['Previous track','Next track','Play/Pause','Stop','Mute','Vol+','Vol−','Media player','Email','Calculator','Search',
+          'Close window','Lock PC','Run','Task Manager','Show desktop','Zoom in','Zoom out','Copy','Paste','Cut','Select all',
+          'Bookmark','Refresh','Browser back','Browser forward','Open browser','My Computer','File Explorer','Sleep','Shutdown','Restart']
+      },
+      zh: {
+        connect: { visual: 'XD10 + MD1T V2', subtitle: '网页驱动 · XD10 + MD1T V2', title: '连接设备',
+          desc: '仅 2.4G 无线与 USB-C 有线支持在线配置。蓝牙仅基础鼠标连接，不支持网页配置。',
+          btn24g: '连接 — 2.4G', btnWired: '连接 — USB-C 有线', btnBt: '模拟蓝牙（只读）',
+          draftNote: '草稿原型 — 无 WebHID，按钮仅模拟连接状态供 UI 评审。' },
+        lang: { label: '语言', en: 'English', zh: '中文' },
+        nav: { mouse: '鼠标', overview: '概览', dpi: 'DPI', lighting: '灯光', buttons: '按键', macros: '宏',
+          profiles: 'Profile', advanced: '高级', receiver: '接收器', receiverScreen: '展示屏 (DISP)', fnui: 'FN UI 配置', firmware: '固件',
+          resources: '资料', uiGuide: 'XD10 UI 功能介绍 (Final)', xd10Hub: '全部 XD10 资料', screenDemo: '屏幕演示 Demo' },
+        topbar: { product: '三模 8K 鼠标 + 带屏接收器' },
+        banner: { bt: '蓝牙模式：不支持 TeevoLink 在线配置，仅基础鼠标。侧键仍可打开本页。',
+          ok24g: '已连接 2.4G — 全部配置可用。', okWired: '已连接 USB-C 有线 — 全部配置可用。' },
+        overview: { status: '设备状态', link: '连接模式', polling: '回报率', dpi: '当前 DPI', battery: '电量',
+          mouseFw: '鼠标固件', recvFw: '接收器固件', quick: '快捷入口', quickDesc: '接收器侧键单击固定打开本页（固件不可改）。',
+          gotoScreen: '接收器屏', gotoFn: 'FN UI 配置', gotoOta: '固件 OTA',
+          v1v2: 'V1 / V2 范围', v1v2Hint: '来自 PRD',
+          v1a: 'FN UI、计时、DISP P1–P5、相册、弹幕', v1b: '全键改键（32 项）、四宫格（23 项）', v1c: '鼠标 + 接收器 OTA',
+          v2a: 'FN UI 主题色', v2b: '时钟 / 计时数字颜色', v2c: 'P1 天气、低电屏告警' },
+        dpi: { stages: 'DPI 档位', stagesHint: '板载 5 / 5 档', editor: '档位编辑', x: 'X DPI', y: 'Y DPI', curve: '动态 DPI 曲线',
+          performance: '性能', hz: '回报率', lod: 'LOD', motion: 'Motion Sync' },
+        light: { title: 'DPI 指示灯', desc: '切档亮对应颜色 3 秒。充电白灯；充满绿灯；低电红灯闪烁。' },
+        btn: { remap: '按键映射', tableA: '表 A — 32 项', left: '左键', right: '右键', middle: '中键',
+          side1: '侧键 1', side2: '侧键 2', dpi: 'DPI 键', fn: 'FN 键', fnFixed: 'FN（固定 — UI / 计时 / DISP）', scroll: '滚轮上 / 下',
+          receiverFixed: '接收器侧键（固定）', recvClick: '单击', openTeevoLink: '打开 TeevoLink（不可配置）',
+          recvDbl: '双击', dispFlip: 'DISP 翻页（不可配置）', remapOnly: '仅改键',
+          default: '默认', macro1: '宏 1' },
+        macro: { title: '宏编辑器', desc: '为可改键分配宏序列。', name: '宏名称',
+          namePh: '例如：购买绑定', steps: '步骤', stepsPh: '按键按下 → 延迟 → 按键抬起…', save: '保存宏' },
+        prof: { title: '板载 Profile（4 套）', desc: '仅鼠标设置，不含接收器屏内容。', esports: '竞技', fps: 'FPS', moba: 'MOBA', office: '办公' },
+        adv: { sensor: '传感器', debounceL: '左键消抖 (ms)', debounceR: '右键消抖 (ms)', angle: '角度修正',
+          glass: '玻璃表面追踪', frames: '传感器帧数', framesNote: '仅展示 — 固件 OTA 更新',
+          rf: '射频与功耗', rfMode: '射频模式', power: '功耗档位', deepSleep: '深度睡眠', neverLight: '永不浅睡' },
+        recv: { preview: '屏幕预览', p1: 'P1 — 时钟', clockStyle: '时钟款式', syncPc: '同步 PC 时间', weather: '天气 (V2)',
+          p2: 'P2 — 主机仪表', p2Desc: '须 PC 桥接获取数据 — PRD 待确认。',
+          p4album: 'P4 — 相册', slot: '槽位', slot1: '槽位 1', slot2: '槽位 2', slot3: '槽位 3', slot4: '槽位 4',
+          carousel: '轮播间隔', p5: 'P5 — 弹幕', barrage: '弹幕内容', barragePh: '自定义滚动文字…',
+          dispP1: 'DISP P1 — 时钟', dispP2: 'DISP P2 — 主机', dispP3: 'DISP P3 — 鼠标', dispP4: 'DISP P4 — 相册', dispP5: 'DISP P5 — 弹幕',
+          previewClock: '12:45:30', previewHost: '2560×1440 · 165Hz', previewMouse: 'DPI 1600 · 8K', previewAlbum: '🖼 相册', previewBarrage: '« 弹幕 »' },
+        fn: { switches: '总开关', uiMaster: 'FN UI 总开关', timerMaster: 'FN 计时器总开关', timerType: '计时类型',
+          countdown: '倒计时', countup: '正计时', p4: 'UI-P4 多媒体四宫格', p5: 'UI-P5 多媒体四宫格', tableB: '表 B — 23 项',
+          p6: 'UI-P6 — 亮度 / 相册 / 计时 / 时钟', brightness: '屏亮度', albumSlot: '当前相册档',
+          timerPreset: '当前计时预设', clockStyle: '时钟款式', clockColor: '时钟数字颜色 (V2)', timerColor: '计时数字颜色 (V2)',
+          note: 'FN 长按 ≥3 秒进入设备 UI。P4/P5 是唯一可在驱动自配的 FN UI 布局。' },
+        ota: { mouse: 'XD10 鼠标固件', receiver: 'MD1T V2 接收器固件', update: '升级固件',
+          v2: 'V2 OTA 波（开售后 ≤30 天）', v2a: 'SCR-15 FN UI 主题色', v2b: 'SCR-CLK-COL / SCR-TMR-COL 数字颜色',
+          v2c: 'SCR-17 天气、SCR-18 低电告警', done: '固件升级完成（模拟）' },
+        opt: { linear: '线性', custom: '自定义', lodLow: '低', lodMed: '中', lodHigh: '高',
+          rfNormal: '常规', rfEnhanced: '增强远距离', rfHop: '跳频抗干扰', rfBoth: '增强 + 跳频',
+          powOffice: '办公', powNormal: '正常', powComp: '竞技', powFull: '满载',
+          style1: '款式 1', style2: '款式 2', style3: '款式 3', carousel1m: '1 分钟',
+          tmr5: '5 分钟', tmr10: '10 分钟', tmr15: '15 分钟', tmr30: '30 分钟', deepSleepVal: '5 分钟' },
+        conn: { meta24g: '2.4G 无线 · 已连接', metaWired: 'USB-C 有线 · 已连接', metaBt: '蓝牙 · 只读' },
+        autosave: '已保存到设备',
+        mm: ['上一曲','下一曲','播放/暂停','停止','静音','音量+','音量−','打开媒体播放器','打开邮箱','计算器','搜索',
+          '关闭窗口','锁定电脑','运行','任务管理器','显示桌面','放大','缩小','复制','粘贴','剪切','全选',
+          '书签','刷新','浏览器上一页','浏览器下一页','打开浏览器','我的电脑','文件资源管理器','睡眠','关机','重启']
+      }
+    };
+
+    const TABLE_B_INDICES = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,21,26,27,28,29,30,31];
+    const DPI_DATA = [
+      { v: 400, c: '#ef4444' }, { v: 800, c: '#3b82f6' }, { v: 1600, c: '#22c55e' },
+      { v: 3200, c: '#a855f7' }, { v: 6400, c: '#eab308' }
+    ];
+    let lang = localStorage.getItem('teevolink-xd10-lang') || 'en';
+    let connMode = null;
+    let activeDpi = 2;
+    let activeDispPage = 1;
+    let langMenuOpen = false;
+
+    const LANG_OPTIONS = [
+      { code: 'en', flag: '🇺🇸', labelKey: 'lang.en' },
+      { code: 'zh', flag: '🇨🇳', labelKey: 'lang.zh' },
+    ];
+
+    function t(path) {
+      const keys = path.split('.');
+      let o = I18N[lang];
+      for (const k of keys) o = o?.[k];
+      return o ?? path;
+    }
+
+    function getDispPreview() {
+      return {
+        1: { labelKey: 'recv.dispP1', textKey: 'recv.previewClock' },
+        2: { labelKey: 'recv.dispP2', textKey: 'recv.previewHost' },
+        3: { labelKey: 'recv.dispP3', textKey: 'recv.previewMouse' },
+        4: { labelKey: 'recv.dispP4', textKey: 'recv.previewAlbum' },
+        5: { labelKey: 'recv.dispP5', textKey: 'recv.previewBarrage' },
+      };
+    }
+
+    function applyI18n() {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        const val = t(k);
+        if (val && typeof val === 'string') el.textContent = val;
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+      });
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+      const deep = document.getElementById('inp-deep-sleep');
+      if (deep) deep.value = t('opt.deepSleepVal');
+      updateLangTriggers();
+      if (activeDispPage) setDispPage(activeDispPage);
+    }
+
+    function updateLangTriggers() {
+      document.querySelectorAll('.lang-trigger-label').forEach(el => {
+        el.textContent = lang === 'zh' ? t('lang.zh') : t('lang.en');
+      });
+      document.querySelectorAll('.lang-trigger-flag').forEach(el => {
+        el.textContent = lang === 'zh' ? '🇨🇳' : '🇺🇸';
+      });
+      document.querySelectorAll('.lang-option').forEach(btn => {
+        const isActive = btn.dataset.lang === lang;
+        btn.classList.toggle('active', isActive);
+        const check = btn.querySelector('.check');
+        if (check) check.style.display = isActive ? 'inline' : 'none';
+        const labelEl = btn.querySelector('.opt-label');
+        if (labelEl && btn.dataset.labelKey) labelEl.textContent = t(btn.dataset.labelKey);
+      });
+    }
+
+    function closeLangMenus() {
+      langMenuOpen = false;
+      document.querySelectorAll('.lang-menu').forEach(m => m.classList.remove('open'));
+      document.querySelectorAll('.lang-backdrop').forEach(b => b.remove());
+    }
+
+    function openLangMenu(menu) {
+      closeLangMenus();
+      langMenuOpen = true;
+      menu.classList.add('open');
+      const backdrop = document.createElement('div');
+      backdrop.className = 'lang-backdrop';
+      backdrop.onclick = closeLangMenus;
+      document.body.appendChild(backdrop);
+    }
+
+    function mountLangPicker(containerId) {
+      const host = document.getElementById(containerId);
+      if (!host) return;
+      host.innerHTML = '';
+      host.className = 'lang-picker' + (containerId === 'lang-picker-connect' ? ' connect-lang' : '');
+
+      const trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'lang-trigger';
+      trigger.setAttribute('aria-haspopup', 'listbox');
+      trigger.innerHTML = '<span class="flag lang-trigger-flag"></span><span class="lang-trigger-label"></span><span class="chev">▾</span>';
+
+      const menu = document.createElement('div');
+      menu.className = 'lang-menu';
+      menu.setAttribute('role', 'listbox');
+
+      LANG_OPTIONS.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'lang-option';
+        btn.dataset.lang = opt.code;
+        btn.dataset.labelKey = opt.labelKey;
+        btn.setAttribute('role', 'option');
+        btn.innerHTML = '<span class="flag">' + opt.flag + '</span><span class="opt-label">' + t(opt.labelKey) + '</span><span class="check">✓</span>';
+        btn.onclick = () => setLang(opt.code);
+        menu.appendChild(btn);
+      });
+
+      trigger.onclick = (e) => {
+        e.stopPropagation();
+        if (menu.classList.contains('open')) closeLangMenus();
+        else openLangMenu(menu);
+      };
+
+      host.appendChild(trigger);
+      host.appendChild(menu);
+    }
+
+    function setLang(code) {
+      if (lang === code) { closeLangMenus(); return; }
+      lang = code;
+      localStorage.setItem('teevolink-xd10-lang', lang);
+      closeLangMenus();
+      applyI18n();
+      buildRemapSelects();
+      buildGrids();
+      if (connMode) updateConnectionUI();
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2000);
+    }
+
+    function autosave() {
+      if (connMode === 'bt') return;
+      showToast(t('autosave'));
+    }
+
+    function connect(mode) {
+      connMode = mode;
+      document.getElementById('connect-screen').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
+      updateConnectionUI();
+      applyI18n();
+    }
+
+    function updateConnectionUI() {
+      const badge = document.getElementById('conn-badge');
+      const meta = document.getElementById('device-meta');
+      const banner = document.getElementById('conn-banner');
+      const configDisabled = connMode === 'bt';
+
+      document.querySelectorAll('.page input, .page select, .page textarea, .page button.btn.primary')
+        .forEach(el => { if (!el.id?.startsWith('ota')) el.disabled = configDisabled; });
+
+      if (connMode === '24g') {
+        badge.className = 'badge ok';
+        badge.textContent = '2.4G';
+        meta.textContent = t('conn.meta24g');
+        document.getElementById('ov-link').textContent = '2.4G';
+        banner.innerHTML = '<div class="banner info">' + t('banner.ok24g') + '</div>';
+      } else if (connMode === 'wired') {
+        badge.className = 'badge ok';
+        badge.textContent = 'USB-C';
+        meta.textContent = t('conn.metaWired');
+        document.getElementById('ov-link').textContent = 'USB-C';
+        banner.innerHTML = '<div class="banner info">' + t('banner.okWired') + '</div>';
+      } else {
+        badge.className = 'badge warn';
+        badge.textContent = 'BT';
+        meta.textContent = t('conn.metaBt');
+        document.getElementById('ov-link').textContent = lang === 'zh' ? '蓝牙' : 'BT';
+        banner.innerHTML = '<div class="banner warn">' + t('banner.bt') + '</div>';
+      }
+    }
+
+    function goPage(name) {
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === name));
+      document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
+    }
+
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => goPage(btn.dataset.page));
+    });
+
+    document.getElementById('btn-connect-24g').onclick = () => connect('24g');
+    document.getElementById('btn-connect-wired').onclick = () => connect('wired');
+    document.getElementById('btn-connect-bt').onclick = () => connect('bt');
+
+    document.getElementById('theme-toggle').onclick = () => {
+      const html = document.documentElement;
+      const dark = html.getAttribute('data-theme') === 'dark';
+      html.setAttribute('data-theme', dark ? 'light' : 'dark');
+      document.getElementById('theme-toggle').textContent = dark ? '🌙' : '☀';
+    };
+
+    document.getElementById('profile-tabs').querySelectorAll('button').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('#profile-tabs button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        autosave();
+      };
+    });
+
+    function buildDpiStages() {
+      const wrap = document.getElementById('dpi-stages');
+      wrap.innerHTML = '';
+      DPI_DATA.forEach((d, i) => {
+        const el = document.createElement('div');
+        el.className = 'dpi-stage' + (i === activeDpi ? ' active' : '');
+        el.style.borderColor = i === activeDpi ? d.c : '';
+        el.style.background = i === activeDpi ? d.c + '18' : '';
+        el.innerHTML = '<div style="width:14px;height:14px;border-radius:3px;background:' + d.c + '"></div><div class="dpi-val">' + d.v + '</div>';
+        el.onclick = () => { activeDpi = i; buildDpiStages(); autosave(); };
+        wrap.appendChild(el);
+      });
+    }
+
+    function buildLedColors() {
+      const wrap = document.getElementById('led-colors');
+      wrap.innerHTML = '';
+      DPI_DATA.forEach(d => {
+        const el = document.createElement('div');
+        el.className = 'tile';
+        el.innerHTML = '<div style="width:24px;height:24px;border-radius:4px;background:' + d.c + ';margin:0 auto 6px"></div><span style="font-size:11px">' + d.v + '</span>';
+        wrap.appendChild(el);
+      });
+    }
+
+    function buildRemapSelects() {
+      const mm = I18N[lang].mm;
+      const suffix = ' (' + t('btn.remapOnly') + ')';
+      const REMAP_ONLY = [17,18,19,20,21,22,24,25,26];
+      const opts = mm.map((label, i) => {
+        const extra = REMAP_ONLY.includes(i) ? suffix : '';
+        return '<option value="' + i + '">' + label + extra + '</option>';
+      }).join('');
+      const base = '<option>' + t('btn.default') + '</option><option>' + t('btn.macro1') + '</option>' + opts;
+      document.querySelectorAll('.remap-select').forEach(sel => {
+        const prev = sel.value;
+        sel.innerHTML = base;
+        if (prev) sel.value = prev;
+        sel.onchange = autosave;
+      });
+    }
+
+    function buildGrid(containerId, defaults) {
+      const wrap = document.getElementById(containerId);
+      const mm = I18N[lang].mm;
+      wrap.innerHTML = '';
+      defaults.forEach((defIdx, tile) => {
+        const div = document.createElement('div');
+        div.className = 'tile';
+        const sel = document.createElement('select');
+        TABLE_B_INDICES.forEach(i => {
+          const o = document.createElement('option');
+          o.value = i;
+          o.textContent = mm[i];
+          if (i === defIdx) o.selected = true;
+          sel.appendChild(o);
+        });
+        sel.onchange = autosave;
+        div.appendChild(sel);
+        wrap.appendChild(div);
+      });
+    }
+
+    function buildGrids() {
+      buildGrid('grid-p4', [2, 5, 6, 4]);
+      buildGrid('grid-p5', [15, 14, 26, 12]);
+    }
+
+    function setDispPage(n) {
+      activeDispPage = n;
+      const previews = getDispPreview();
+      const p = previews[n];
+      document.getElementById('preview-label').textContent = t(p.labelKey);
+      document.getElementById('preview-content').textContent = t(p.textKey);
+    }
+
+    function runOta(barId, btnId) {
+      if (connMode === 'bt') return;
+      const bar = document.getElementById(barId);
+      const btn = document.getElementById(btnId);
+      btn.disabled = true;
+      let w = 0;
+      const iv = setInterval(() => {
+        w += 8;
+        bar.style.width = w + '%';
+        if (w >= 100) {
+          clearInterval(iv);
+          btn.disabled = false;
+          showToast(t('ota.done'));
+          bar.style.width = '0%';
+        }
+      }, 200);
+    }
+
+    document.getElementById('ota-mouse').onclick = () => runOta('ota-mouse-bar', 'ota-mouse');
+    document.getElementById('ota-recv').onclick = () => runOta('ota-recv-bar', 'ota-recv');
+
+    document.querySelectorAll('input, select, textarea').forEach(el => {
+      if (!el.closest('#connect-screen')) el.addEventListener('change', () => { if (connMode !== 'bt') autosave(); });
+    });
+
+    mountLangPicker('lang-picker-connect');
+    mountLangPicker('lang-picker-app');
+    buildDpiStages();
+    buildLedColors();
+    buildRemapSelects();
+    buildGrids();
+    applyI18n();
+    setDispPage(1);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLangMenus();
+    });
+  </script>
+</body>
+</html>

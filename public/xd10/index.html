@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XD10 Resources · TeevoLink</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <style>
+    :root {
+      --bg: #111; --bg2: #1a1a1a; --tx: #ededed; --tx2: #909090; --tx3: #555;
+      --bd: #272727; --ac: #78BE1F; --acd: #96d038; --acl: #1d2e07; --r: 6px; --rl: 8px;
+    }
+    [data-theme="light"] {
+      --bg: #fff; --bg2: #f5f5f5; --tx: #0a0a0a; --tx2: #555; --tx3: #999;
+      --bd: #e0e0e0; --acd: #5A9010; --acl: #EEF7DF;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100dvh; background: #0d0d0d; color: var(--tx);
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif; font-size: 14px; line-height: 1.55; }
+    a { color: var(--acd); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 28px 20px 48px; }
+    .top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 28px; }
+    .brand { font-weight: 800; font-size: 13px; letter-spacing: 0.04em; }
+    .brand span { color: var(--ac); }
+    .controls { display: flex; gap: 8px; align-items: center; }
+    .btn { padding: 6px 12px; border-radius: var(--r); border: 1px solid var(--bd); background: var(--bg2);
+      color: var(--tx2); cursor: pointer; font-size: 12px; font-weight: 600; }
+    .btn:hover { border-color: var(--ac); color: var(--tx); }
+    h1 { font-size: 22px; margin: 0 0 8px; font-weight: 800; }
+    .sub { color: var(--tx2); margin: 0 0 24px; font-size: 13px; }
+    .card { background: var(--bg); border: 1px solid var(--bd); border-radius: var(--rl); padding: 16px 18px; margin-bottom: 12px; }
+    .card h2 { margin: 0 0 6px; font-size: 15px; font-weight: 700; }
+    .card p { margin: 0 0 12px; color: var(--tx2); font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div class="brand">TEE<span>VO</span>LINK · XD10</div>
+      <div class="controls">
+        <a class="btn" href="/">Main app</a>
+        <a class="btn" href="/draft-xd10/">XD10 draft UI</a>
+        <button type="button" class="btn" id="theme-btn" title="Toggle theme">Theme</button>
+      </div>
+    </header>
+    <h1>XD10 + MD1T v2 resources</h1>
+    <p class="sub">LEVA / LEVA PRO · Vendor Final package (2026-11-20). Canonical receiver-screen behavior reference.</p>
+
+    <article class="card">
+      <h2><a href="./ui-features.html">XD10 UI 功能介绍</a> <span style="color:var(--ac);font-size:11px;font-weight:700">FINAL</span></h2>
+      <p>Keys, FN flow, page order, timers, status icons — with screenshots. Use this when configuring DISP / FN UI in TeevoLink or reviewing firmware.</p>
+      <a href="./ui-features.html">Open UI guide →</a>
+    </article>
+
+    <article class="card">
+      <h2><a href="./interactive-demo.html">XD10 交互 DEMO</a></h2>
+      <p>Standalone interactive demo from the same Final delivery package (double-click entry in vendor zip).</p>
+      <a href="./interactive-demo.html">Open interactive demo →</a>
+    </article>
+
+    <article class="card">
+      <h2><a href="/md1t-screen-demo/03_UI%E6%BC%94%E7%A4%BADEMO/index.html">MD1T screen demo (570×488)</a></h2>
+      <p>Teevolution-hosted simulator with OTA, timer, and i18n shell — aligned to earlier V2 delivery (2026-10).</p>
+      <a href="/md1t-screen-demo/项目总览.html">Delivery hub →</a>
+    </article>
+
+    <article class="card">
+      <h2><a href="/draft-xd10/">TeevoLink XD10 draft</a></h2>
+      <p>Product-shaped TeevoLink prototype (mouse + receiver panels) for stakeholder review.</p>
+    </article>
+  </div>
+  <script>
+    const key = 'teevolink-xd10-hub-theme';
+  const root = document.documentElement;
+    function apply(t) { root.dataset.theme = t; localStorage.setItem(key, t); }
+    apply(localStorage.getItem(key) || 'dark');
+    document.getElementById('theme-btn').onclick = () => apply(root.dataset.theme === 'light' ? 'dark' : 'light');
+  </script>
+</body>
+</html>

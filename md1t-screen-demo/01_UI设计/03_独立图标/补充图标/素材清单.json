@@ -1,0 +1,93 @@
+[
+  {
+    "id": "album-slot-empty",
+    "width": 27,
+    "height": 22,
+    "source": "P04EMPTY",
+    "note": "FN 相册档位无图片，原位置445,158；留2px透明边距"
+  },
+  {
+    "id": "album-current-empty",
+    "width": 102,
+    "height": 82,
+    "source": "F02SLOT",
+    "note": "当前档位无图片，原位置239,206；留5px透明边距"
+  },
+  {
+    "id": "album-all-empty",
+    "width": 204,
+    "height": 132,
+    "source": "F02",
+    "note": "全部相册为空，原位置186,98；留3px透明边距"
+  },
+  {
+    "id": "update-success",
+    "width": 108,
+    "height": 108,
+    "source": "UM02",
+    "note": "升级成功；鼠标与接收器共用"
+  },
+  {
+    "id": "update-failed",
+    "width": 108,
+    "height": 108,
+    "source": "UM03",
+    "note": "升级失败；鼠标与接收器共用"
+  },
+  {
+    "id": "update-reconnecting",
+    "width": 108,
+    "height": 108,
+    "source": "UM04",
+    "note": "重连等待；鼠标与接收器共用"
+  },
+  {
+    "id": "host-computer",
+    "width": 44,
+    "height": 44,
+    "source": "H01",
+    "note": "主机信息标题图标"
+  },
+  {
+    "id": "color-white",
+    "width": 16,
+    "height": 16,
+    "source": "DEMO color selector",
+    "note": "颜色选项，选中时白色描边"
+  },
+  {
+    "id": "color-white-selected",
+    "width": 16,
+    "height": 16,
+    "source": "DEMO color selector",
+    "note": "颜色选项，选中时白色描边"
+  },
+  {
+    "id": "color-green",
+    "width": 16,
+    "height": 16,
+    "source": "DEMO color selector",
+    "note": "颜色选项，选中时白色描边"
+  },
+  {
+    "id": "color-green-selected",
+    "width": 16,
+    "height": 16,
+    "source": "DEMO color selector",
+    "note": "颜色选项，选中时白色描边"
+  },
+  {
+    "id": "color-blue",
+    "width": 16,
+    "height": 16,
+    "source": "DEMO color selector",
+    "note": "颜色选项，选中时白色描边"
+  },
+  {
+    "id": "color-blue-selected",
+    "width": 16,
+    "height": 16,
+    "source": "DEMO color selector",
+    "note": "颜色选项，选中时白色描边"
+  }
+]
